@@ -6,7 +6,7 @@ CC = gcc
 
 CFLAGS = -fPIC
 
-OFLAGS = -shared -W1,-soname=$(EXEC)
+OFLAGS = -shared -Wl,-soname=$(EXEC)
 
 INCL = 
 
