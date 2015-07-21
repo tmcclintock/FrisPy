@@ -84,30 +84,31 @@ void equations_of_motion(double*positions,double*derivs,
 
   //Construct the Euler rotation matrix to go from 
   //the inertial frame (N) to the body frame (C)
-  // the 
+  //NOTE: Tnc takes you from N to C
+  //while {Tnc}^T = Tcn takes you from C to N
   double Tnc[3][3];
   Tnc[0][0] = c_tht, Tnc[0][1] = s_phi*s_tht,  Tnc[0][2] = -c_phi*s_tht;
   Tnc[1][0] = 0,     Tnc[1][1] = c_phi,        Tnc[1][2] = s_phi;
   Tnc[2][0] = s_tht, Tnc[2][1] = -s_phi*c_tht, Tnc[2][2] = c_phi*c_tht;
 
   //Define the rotation matrix rows
-  double C1[] = {Tnc[0][0],T[0][1],T[0][2]};
-  double C2[] = {Tnc[1][0],T[1][1],T[1][2]};
-  double C3[] = {Tnc[2][0],T[2][1],T[2][2]};
+  double C1[] = {Tnc[0][0],Tnc[0][1],Tnc[0][2]};
+  double C2[] = {Tnc[1][0],Tnc[1][1],Tnc[1][2]};
+  double C3[] = {Tnc[2][0],Tnc[2][1],Tnc[2][2]};
 
   //Find the velocity components in the body frame
   double v[]={vx,vy,vz};
   double v_dot_C3 = dot(v,C3);
   double v_plane[] = {v[0]*(1-v_dot_C3),v[1]*(1-v_dot_C3),v[2]*(1-v_dot_C3)};
 
-  //Find the length of these variace velocities
+  //Find the length of these various velocities
   double norm_v_plane = sqrt(dot(v_plane,v_plane));
   double norm_v = sqrt(dot(v,v));
   double norm_vp = sqrt(dot(v_plane,v_plane));
 
   //Find the unit vectors for various directions
   double v_hat[] = {v[0]/norm_v,v[1]/norm_v,v[2]/norm_v};
-  double vp_hat[] = {v_plane[0]/norm_vp,v_plane[1]/norm_vp,v_plane[2],norm_vp}
+  double vp_hat[] = {v_plane[0]/norm_vp,v_plane[1]/norm_vp,v_plane[2],norm_vp};
   double ulat[3];
   cross(C3,vp_hat,ulat);
 
@@ -119,17 +120,17 @@ void equations_of_motion(double*positions,double*derivs,
 
   //Make copies of some of the arrays, mostly so that it is easier to see what is happening
   double x_C_hat[] = {vp_hat[0],vp_hat[1],vp_hat[2]};
-  double y_C_hat[] = {ulat[0],ulat[1],ul[2]};
+  double y_C_hat[] = {ulat[0],ulat[1],ulat[2]};
   double z_C_hat[] = {C3[0],C3[1],C3[2]};
 
   //Calculate the lift force
-  double Flift_amp = CL(alpha,CL0,CL1)*A*rho*dot(v,v)/2.;
+  double Flift_amp = CL(alpha,CL0,CL1)*Area*rho*dot(v,v)/2.;
   double Flift[3];
   cross(v_hat,y_C_hat,Flift);
   Flift[0] = Flift[0]*Flift_amp; Flift[1] = Flift[1]*Flift_amp; Flift[2] = Flift[2]*Flift_amp;
 
   //Calculate the drag force
-  double Fdrag_amp = CD(alpha,CD0,CD1)*A*rho*dot(v,v)/2.;
+  double Fdrag_amp = CD(alpha,CD0,CD1)*Area*rho*dot(v,v)/2.;
   double Fdrag[]={-Fdrag_amp*v_hat[0],-Fdrag_amp*v_hat[1],-Fdrag_amp*v_hat[2]};
 
   //Calculate the gravitational force
@@ -145,7 +146,7 @@ void equations_of_motion(double*positions,double*derivs,
   double w_in_N[3];
   for(i=0;i<3;i++){
     temp1 = 0;
-    for(j=0;j<3;j++){//Tnc.T dot w_in_C
+    for(j=0;j<3;j++){//{Tnc}^T dot w_in_C
       temp1+= Tnc[j][i] * w_in_C[j];
     }
     w_in_N[i] = temp1;
@@ -164,14 +165,14 @@ void equations_of_motion(double*positions,double*derivs,
   double spin_parameter = w_z*d/(2*norm_v);
 
   //Calculate each torque (aka moment)
-  double tau_amp = A*rho*d*dot(v,v)/2;
+  double tau_amp = Area*rho*d*dot(v,v)/2;
   double tau_x_amp = CR(w_x,w_z,CR1x,CR1z)*tau_amp;
   double tau_y_amp = CM(alpha,w_y,CM0,CM1a,CM1y)*tau_amp;
   double tau_z_amp = CN(w_z,CN1z)*tau_amp;
   double tau_x[] = {x_C_hat[0]*tau_x_amp, x_C_hat[1]*tau_x_amp, x_C_hat[2]*tau_x_amp};
   double tau_y[] = {y_C_hat[0]*tau_y_amp, y_C_hat[1]*tau_y_amp, y_C_hat[2]*tau_y_amp};
   double tau_z_N[] = {0, 0, tau_z_amp};
-  //Note: tau_x and tau_y are not in the inertial frame (yet)
+  //Note: tau_x and tau_y are in the body frame, while tau_z is already in N
 
   //Calculate tau_x_N and tau_y_N
   double tau_x_N[3];
@@ -179,7 +180,7 @@ void equations_of_motion(double*positions,double*derivs,
   for(i=0;i<3;i++){
     temp1 = 0;
     temp2 = 0;
-    for(j=0;j<3;j++){//Tnc.T dot w_in_C
+    for(j=0;j<3;j++){//{Tnc}^T dot w_in_C
       temp1+= Tnc[i][j] * tau_x[j];
       temp2+= Tnc[i][j] * tau_y[j];
     }
