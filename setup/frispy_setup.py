@@ -1,8 +1,8 @@
 import numpy as np
 
-def read_params_and_data():
+def read_params_and_data(params_file_name,data_file_name):
 	#First read in the initial parameters
-	params_file_name = 'initial_params.txt'
+	#params_file_name = 'initial_params.txt'
 	params_path = '../params/'+params_file_name
 	initial_params = np.genfromtxt(params_path,names=True)
 
@@ -12,7 +12,7 @@ def read_params_and_data():
 	print '' #a blank line
 
 	#Now read in the flight data
-	data_file_name = 'test_data.txt'
+	#data_file_name = 'test_data.txt'
 	data_path = '../data/'+data_file_name
 	flight_data = np.genfromtxt(data_path,names=True)
 
