@@ -1,0 +1,2 @@
+x y z vx vy vz phi theta phiDot thetaDot gammaDot
+0 0 1 9  0  0  0   0     0      0        50

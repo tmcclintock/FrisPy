@@ -13,7 +13,8 @@ argv = sys.argv
 
 #Check if no options have been given
 if len(argv)>3 or len(argv)<3:
-	message = "Usage error: incorrect number of arguments. Please run with 'python FrisPy [mode] [config_name]'."
+	message = "Usage error: incorrect number of arguments. "+\
+		  "Please run with 'python FrisPy [mode] [config_filename]'."
 	raise Exception(message)
 #sys.exit(message)
 
@@ -27,5 +28,6 @@ elif mode.lower() == 'mcmc':
 	print "Running in MCMC mode."
 	MCMC.FrisPy_MCMC(config_filename)
 else:
-	message = "Usage Error: incorrect mode. Please specify either 'Animation' or 'MCMC'."
+	message = "Usage Error: incorrect mode. "+\
+		  "Please specify either 'Animation' or 'MCMC'."
 	raise Exception(message)

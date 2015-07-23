@@ -19,7 +19,7 @@ def read_config_file(file_name):
     config = dict()
     file_in = open(file_name)
     for line in file_in:
-        line.strip()
+        line = line.strip()
         if len(line) == 0 or line[0] == '#':
             pass
         else:
