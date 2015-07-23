@@ -1,8 +1,8 @@
-import numpy as np
-
+#Return a dictionary of the contents of the parameter file
 def read_params(params_file_name):
+	import numpy as np
+
 	#Read in the initial parameters
-	#params_file_name = 'initial_params.txt'
 	params_path = '../params/'+params_file_name
 	initial_params = np.genfromtxt(params_path,names=True)
 
@@ -13,7 +13,10 @@ def read_params(params_file_name):
 
 	return initial_params
 
+#Return a dictionary of the contents of the data file
 def read_data(data_file_name):
+	import numpy as np
+
 	#Read in the flight data
 	data_path = '../data/'+data_file_name
 	flight_data = np.genfromtxt(data_path,names=True)
@@ -27,6 +30,7 @@ def read_data(data_file_name):
 	#and the flight data
 	return flight_data
 
+#Return the dictionaries of the contents of the params and data files.
 def read_params_and_data(params_file_name,data_file_name):
 	#params_file_name = 'initial_params.txt'
 	#data_file_name = 'test_data.txt'

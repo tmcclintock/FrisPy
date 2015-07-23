@@ -4,9 +4,8 @@
 #the parts of the program.
 
 #Import the Animation and MCMC routines
-import imp
-Animation = imp.load_source("FrisPy_Animation.py","Animation/FrisPy_Animation.py")
-MCMC = imp.load_source("FrisPy_MCMC.py","MCMC/FrisPy_MCMC.py")
+from Animation import FrisPy_Animation as Animation
+from MCMC import FrisPy_MCMC as MCMC
 
 #Obtain the command line arguments
 import sys
