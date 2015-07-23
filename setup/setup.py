@@ -6,9 +6,11 @@ def read_params(params_file_name):
 	params_path = 'params/'+params_file_name
 	params = np.genfromtxt(params_path,names=True)
 
-	print '\nUsing parameters:'
+	print '\nParameters from:'
+	print '\t',params_path
+	print 'Using parameters:'
 	for i in xrange(0,len(params.dtype.names)):
-		print params.dtype.names[i], params[params.dtype.names[i]]
+		print '\t',params.dtype.names[i], params[params.dtype.names[i]]
 	print '' #a blank line
 
 	return params
@@ -23,8 +25,11 @@ def read_initial_conditions(initial_conditions_file_name):
 
 	print '\nInitial conditions recieved from:'
 	print '\t',ic_path
-	print '\nInitial conditions for:'
-	print '\t',initial_conditions.dtype.names
+	print 'Initial conditions are:'
+	for i in xrange(0,len(initial_conditions.dtype.names)):
+		print '\t',initial_conditions.dtype.names[i],\
+		      initial_conditions[initial_conditions.dtype.names[i]]
+
 
 	#Return the initial conditions
 	return initial_conditions
