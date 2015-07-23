@@ -19,4 +19,4 @@ def FrisPy_Animation(config_filename):
 				    (params_file_name,
 				     initial_conditions_file_name)
 	
-	
+	#Pass the parameters and conditions to the actual animation routine
