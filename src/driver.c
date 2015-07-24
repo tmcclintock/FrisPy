@@ -9,6 +9,9 @@
 	flight_time: the total time of flight
 */
 double*driver(double*initial_position,double*coeffs,double flight_time){
+	//Declare some iteration variables
+	int i,j;
+
 	//These are the the number of variables and the number of time steps we take
 	int n_vars=12;
 	int n_times=1000;//Increase this to increase precision
@@ -32,7 +35,7 @@ double*driver(double*initial_position,double*coeffs,double flight_time){
 	all_positions[0]=t;
 
 	//Put in the current position as the initial position
-	for (int i = 0; i < n_vars; ++i)
+	for (i = 0; i < n_vars; ++i)
 	{
 		current_position[i] = initial_position[i];
 		all_positions[i+1] = current_position[i];
@@ -40,14 +43,14 @@ double*driver(double*initial_position,double*coeffs,double flight_time){
 
 	//Loop over all the times and advance the simulation
 	//Note: we take n_times-1 steps since we have already stored the initial information
-	for (int i = 0; i < n_times-1; ++i)
+	for (i = 0; i < n_times-1; ++i)
 	{
 		rk4(current_position,dt,t,coeffs);
 		t+=dt;
 
 		//Store the current position and time
 		all_positions[(i+1)*(n_vars+1)+0]=t;
-		for (int j = 0; j < n_vars; ++j)
+		for (j = 0; j < n_vars; ++j)
 		{
 			all_positions[(i+1)*(n_vars+1)+(j+1)] = current_position[j];
 		}
