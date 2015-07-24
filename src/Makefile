@@ -1,6 +1,6 @@
-EXEC = rk4.so
+EXEC = driver.so
 
-OBJS = rk4.o equations_of_motion.o coefficients.o
+OBJS = driver.o rk4.o equations_of_motion.o coefficients.o
 
 CC = gcc
 
