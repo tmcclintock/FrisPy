@@ -19,6 +19,7 @@ LIBS =
 
 $(EXEC): $(OBJS)
 	$(CC) $(OFLAGS) $(OBJS) $(LIBS) -o $(EXEC)
+	rm $(OBJS)
 
 .PHONY: clean
 
