@@ -1,6 +1,7 @@
 from setup import setup,config
 import ctypes
 import driver_interface_animation
+import numpy as np
 
 def FrisPy_Animation(config_filename):
 	#Parse the configuration file
@@ -20,6 +21,11 @@ def FrisPy_Animation(config_filename):
 	params,initial_conditions = setup.read_params_and_initial_conditions\
 				    (params_file_name,
 				     initial_conditions_file_name)
+
+	#Recall that params and initial conditions are both dict() objects
+	#They need to be checked for values and converted to arrays
+	#setup.check_params(params)
+	#setup.check_initial_conditions(initial_conditions)
 	
 	#Pass the parameters and conditions to the actual animation routine
 	positions = driver_interface_animation.get_positions(initial_conditions,params)
