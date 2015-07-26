@@ -1,3 +1,6 @@
+import numpy as np
+
+
 #Return a dictionary of the contents of the parameter file
 def read_params(params_file_name):
 	import numpy as np
@@ -5,15 +8,17 @@ def read_params(params_file_name):
 	#Read in the initial parameters
 	params_path = 'params/'+params_file_name
 	params = np.genfromtxt(params_path,names=True)
+	params_out = []
 
 	print '\nParameters from:'
 	print '\t',params_path
 	print 'Using parameters:'
 	for i in xrange(0,len(params.dtype.names)):
 		print '\t',params.dtype.names[i], params[params.dtype.names[i]]
+		params_out.append(params[params.dtype.names[i]])
 	print '' #a blank line
 
-	return params
+	return params_out
 
 #Return a dictionary of the contents of the initial conditions file
 def read_initial_conditions(initial_conditions_file_name):
@@ -22,6 +27,7 @@ def read_initial_conditions(initial_conditions_file_name):
 	#Reda in the initial conditions
 	ic_path = 'data/'+initial_conditions_file_name
 	initial_conditions = np.genfromtxt(ic_path,names=True)
+	ic_out = []
 
 	print '\nInitial conditions recieved from:'
 	print '\t',ic_path
@@ -29,10 +35,11 @@ def read_initial_conditions(initial_conditions_file_name):
 	for i in xrange(0,len(initial_conditions.dtype.names)):
 		print '\t',initial_conditions.dtype.names[i],\
 		      initial_conditions[initial_conditions.dtype.names[i]]
+		ic_out.append(initial_conditions[initial_conditions.dtype.names[i]])
 
 
 	#Return the initial conditions
-	return initial_conditions
+	return ic_out
 
 #Return a dictionary of the contents of the data file
 def read_data(data_file_name):

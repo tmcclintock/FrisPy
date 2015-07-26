@@ -8,9 +8,21 @@
 	coeffs: the coefficients used in the current calculation
 	flight_time: the total time of flight
 */
-double*driver(double*initial_position,double*coeffs,double flight_time){
+//double*driver(double*initial_position,double*coeffs,double flight_time){
+double*driver(void*initial_positionav,void*coeffsav,double flight_time){
+	//The input arrays came in as void* so we need to cast them back
+	double*initial_position = (double*)initial_positionav;
+	double*coeffs = (double*)coeffsav;
+
 	//Declare some iteration variables
 	int i,j;
+
+	for (i = 0; i < 12; ++i)
+	{
+		printf("coeffs[%d] = %e\n",i,coeffs[i]);
+	}
+	if (i==12)
+		return coeffs;
 
 	//These are the the number of variables and the number of time steps we take
 	int n_vars=12;
