@@ -8,8 +8,7 @@
 	coeffs: the coefficients used in the current calculation
 	flight_time: the total time of flight
 */
-//double*driver(double*initial_position,double*coeffs,double flight_time){
-double*driver(void*initial_positionav,void*coeffsav,double flight_time){
+void driver(void*initial_positionav,void*coeffsav,double flight_time,int n_times,double*all_positions){
 	//The input arrays came in as void* so we need to cast them back
 	double*initial_position = (double*)initial_positionav;
 	double*coeffs = (double*)coeffsav;
@@ -19,22 +18,14 @@ double*driver(void*initial_positionav,void*coeffsav,double flight_time){
 
 	for (i = 0; i < 10; ++i)
 	{
-		printf("coeffs[%d] = %e\tat %p\n",i,coeffs[i],&coeffs[i]);
+		all_positions[i] = i;
+		printf("coeffs[%d] = %e\tap[%d] = %e\n",i,coeffs[i],i,all_positions[i]);
 	}
 	if (12==12)
-		return coeffs;
+		return;
 
-	//These are the the number of variables and the number of time steps we take
+	//These are the the number of variables
 	int n_vars=12;
-	int n_times=1000;//Increase this to increase precision
-
-	//Declare the array that will hold all of the position data
-	//We need to allocate it in this way in order to correctly pass it
-	//back into python, which needs a contiguous array in memory
-	//The extra dimension is for the time
-	//static double all_positions[(1+n_vars)*n_times];
-	double*all_positions;
-	all_positions = (double*)malloc(sizeof(double)*(1+n_vars)*n_times);
 
 	//Declare an array for the current positions
 	double current_position[n_vars];
@@ -69,10 +60,10 @@ double*driver(void*initial_positionav,void*coeffsav,double flight_time){
 	}
 
 	//Now return the all_positions array
-	return all_positions;
+	return;
 }
 
-//This function is necessary to eventually free the array, since it can't be
+//This function is necessary to free c arrays, since that can't be
 //done from within python
 void cleanup(double*array){
 	free(array);

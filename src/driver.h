@@ -1,3 +1,2 @@
-//double*driver(double*initial_position,double*coeffs,double flight_time);
-double*driver(void*initial_position,void*coeffs,double flight_time);
+void driver(void*initial_position,void*coeffs,double flight_time,int n_times,double*all_positions);
 void cleanup(double*array);
