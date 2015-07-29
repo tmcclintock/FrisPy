@@ -38,7 +38,10 @@ def get_positions(initial_positions,coeffs):
 
 	#Call the driver
 	all_positions = driver(ip_out,co_out,flight_time)
-	#print all_positions
+	print all_positions,"\n"
+
+	theworks = np.ndarray((1,),dtype=np.float64, buffer=all_positions)
+	print theworks
 
 	#Call the cleanup
 	#cleanup(all_positions)

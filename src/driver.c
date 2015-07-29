@@ -19,7 +19,7 @@ double*driver(void*initial_positionav,void*coeffsav,double flight_time){
 
 	for (i = 0; i < 10; ++i)
 	{
-		printf("coeffs[%d] = %e\n",i,coeffs[i]);
+		printf("coeffs[%d] = %e\tat %p\n",i,coeffs[i],&coeffs[i]);
 	}
 	if (12==12)
 		return coeffs;
