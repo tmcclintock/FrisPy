@@ -17,11 +17,11 @@ double*driver(void*initial_positionav,void*coeffsav,double flight_time){
 	//Declare some iteration variables
 	int i,j;
 
-	for (i = 0; i < 12; ++i)
+	for (i = 0; i < 10; ++i)
 	{
 		printf("coeffs[%d] = %e\n",i,coeffs[i]);
 	}
-	if (i==12)
+	if (12==12)
 		return coeffs;
 
 	//These are the the number of variables and the number of time steps we take

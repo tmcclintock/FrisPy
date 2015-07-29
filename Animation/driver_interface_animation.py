@@ -11,8 +11,9 @@ def get_positions(initial_positions,coeffs):
 	#it is gauranteed that they are contiguous in memory
 	#This is a REQUIREMENT for arrays in c and isn't
 	#fulfilled in python
-	initia_positions = np.array(initial_positions, dtype=np.double).copy()
+	initial_positions = np.array(initial_positions, dtype=np.double).copy()
 	coeffs = np.array(coeffs, dtype=np.double).copy()
+
 
 	#Animations shouldn't have specified flight times,
 	#but since driver() takes one we specify a flight time
@@ -32,13 +33,15 @@ def get_positions(initial_positions,coeffs):
 	cleanup.restype = (None)
 	cleanup.argtypes = [ctypes.POINTER(ctypes.c_double)]
 
+	ip_out = initial_positions.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+	co_out = coeffs.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+
 	#Call the driver
-	#all_positions = driver(ctypes.cast(initial_positions,ctypes.POINTER(ctypes.c_double)),\
-	#	ctypes.cast(coeffs,ctypes.POINTER(ctypes.c_double)),\
-#		flight_time)
+	all_positions = driver(ip_out,co_out,flight_time)
+	#print all_positions
 
 	#Call the cleanup
 	#cleanup(all_positions)
 	
 	#Return the entire position array
-	return all_positions
+	return 0#all_positions
