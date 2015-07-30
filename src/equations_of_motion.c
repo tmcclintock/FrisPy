@@ -160,7 +160,7 @@ void equations_of_motion(double*positions,double*derivs,
   double w_z = dot(w_in_N,z_C_hat);
 
   //Calculate the spin parameter, which could be used later
-  //to incorporate the Robins-Magnus forec or if we
+  //to incorporate the Robins-Magnus force or if we
   //have more accurate data about drag coefficients
   double spin_parameter = w_z*d/(2*norm_v);
 

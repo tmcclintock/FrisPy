@@ -16,6 +16,12 @@ void rk4(double*positions,double dt,double t,double*coeffs){
 	//Iteration variables
 	int i,j;
 
+	//If the disk has hit the ground, then keep the same positions
+	if(positions[2] <= 0){
+		//if z <= 0
+		return;
+	}
+
 	//Find the derivatives at the start time for k1
 	equations_of_motion(positions,k1,t,coeffs);
 

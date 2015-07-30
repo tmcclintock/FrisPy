@@ -17,6 +17,7 @@ def get_positions(initial_positions,coeffs):
 	#Convert the initial angles and angular velocities in degrees to radians
 	radians = np.pi/180.
 	initial_positions[7:] = initial_positions[7:]*radians
+	print initial_positions
 
 	#Animations shouldn't have specified flight times,
 	#but since driver() takes one we specify a flight time
@@ -25,7 +26,7 @@ def get_positions(initial_positions,coeffs):
 	flight_time = 1.0 #seconds
 
 	#Number of time steps
-	n_times = 2000
+	n_times = 20
 
 	#Load the driver library and its funcitons
 	#Then specify the arguement and return types
