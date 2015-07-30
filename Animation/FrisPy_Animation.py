@@ -1,7 +1,8 @@
 from setup import setup,config
 import ctypes
-import driver_interface_animation
 import numpy as np
+import animation_routines
+import driver_interface_animation
 
 def FrisPy_Animation(config_filename):
 	#Parse the configuration file
@@ -27,7 +28,10 @@ def FrisPy_Animation(config_filename):
 	#setup.check_params(params)
 	#setup.check_initial_conditions(initial_conditions)
 	
-	#Pass the parameters and conditions to the actual animation routine
-	positions = driver_interface_animation.get_positions(initial_conditions,params)
-	print np.shape(positions), " the positions"
-	print "end"
+	#Pass the parameters and conditions to the driver routine
+	positions, n_times = driver_interface_animation.get_positions(initial_conditions,params)
+
+	#Pass the positions and number of times to the animation routines
+	animation_routines.make_plots(positions,n_times)
+
+	print "\nCompleting Animation\n"

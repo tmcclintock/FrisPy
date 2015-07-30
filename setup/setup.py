@@ -37,7 +37,6 @@ def read_initial_conditions(initial_conditions_file_name):
 		      initial_conditions[initial_conditions.dtype.names[i]]
 		ic_out.append(initial_conditions[initial_conditions.dtype.names[i]])
 
-
 	#Return the initial conditions
 	return ic_out
 

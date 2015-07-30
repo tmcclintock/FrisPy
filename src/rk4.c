@@ -24,14 +24,14 @@ void rk4(double*positions,double dt,double t,double*coeffs){
 		temp[i] = positions[i]+dt/2.*k1[i];
 
 	//Find the derivatives at t+dt/2 for k2
-	equations_of_motion(temp,k2,t+dt/2,coeffs);
+	equations_of_motion(temp,k2,t+dt/2.,coeffs);
 
 	//Calculate the new temp arrays
 	for(i=0;i<12;i++)
 		temp[i] = positions[i]+dt/2.*k2[i];
 
 	//Find the derivatives at t+dt/2 for k3
-	equations_of_motion(temp,k3,t+dt/2,coeffs);
+	equations_of_motion(temp,k3,t+dt/2.,coeffs);
 
 	//Calculate the new temp arrays
 	for(i=0;i<12;i++)
@@ -41,8 +41,8 @@ void rk4(double*positions,double dt,double t,double*coeffs){
 	equations_of_motion(temp,k4,t+dt,coeffs);
 
 	//Update the positions
-	for (i = 0; i < 12; ++i)
-		positions[i] = positions[i] + dt/6.*(k1[i]+2*k2[i]+2*k3[i]+k4[i]);
+	for (i=0;i<12;i++)
+		positions[i] = positions[i] + dt/6.*(k1[i]+2.*k2[i]+2.*k3[i]+k4[i]);
 	
 	//End rk4
 	return;
