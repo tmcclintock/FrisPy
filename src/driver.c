@@ -16,14 +16,6 @@ void driver(void*initial_positionav,void*coeffsav,double flight_time,int n_times
 	//Declare some iteration variables
 	int i,j;
 
-	for (i = 0; i < 10; ++i)
-	{
-		all_positions[i] = i;
-		printf("coeffs[%d] = %e\tap[%d] = %e\n",i,coeffs[i],i,all_positions[i]);
-	}
-	if (12==12)
-		return;
-
 	//These are the the number of variables
 	int n_vars=12;
 

@@ -5,7 +5,7 @@ import numpy as np
 #It gathers all of the times and positions to pass back to
 #the animation routines
 def get_positions(initial_positions,coeffs):
-	print "Inside of get_positions"
+	print "\nInside of get_positions"
 
 	#Change these to copies numpy arrays so that
 	#it is gauranteed that they are contiguous in memory
@@ -13,7 +13,6 @@ def get_positions(initial_positions,coeffs):
 	#fulfilled in python
 	initial_positions = np.array(initial_positions, dtype=np.double).copy()
 	coeffs = np.array(coeffs, dtype=np.double).copy()
-
 
 	#Animations shouldn't have specified flight times,
 	#but since driver() takes one we specify a flight time
@@ -39,20 +38,21 @@ def get_positions(initial_positions,coeffs):
 
 	#Create the array that holds all of the positions and times
 	all_positions = np.zeros(1000*13,dtype=np.double)
-	print np.shape(all_positions),all_positions[0:10]
 
 	#Create instances of pointers pointing to the important arrays
 	ip_out = initial_positions.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 	co_out = coeffs.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
-	ap_out = coeffs.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
+	ap_out = all_positions.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
 	#Call the driver
 	driver(ip_out,co_out,flight_time,n_times,ap_out)
-	all_positions = np.array(ap_out[0:1000*13])
-	print np.shape(all_positions),all_positions[0:10]
+	all_positions = np.array(ap_out[0:1000*13]).reshape((1000,13))
 
 	#Call the cleanup
+	#This is unnecessary since all_positions is declared in python
 	#cleanup(all_positions)
 	
 	#Return the entire position array
-	return 0#all_positions
+	print "Returning positions array with shape:"
+	print "\t",np.shape(all_positions)
+	return all_positions

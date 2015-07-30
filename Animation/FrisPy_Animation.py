@@ -29,4 +29,5 @@ def FrisPy_Animation(config_filename):
 	
 	#Pass the parameters and conditions to the actual animation routine
 	positions = driver_interface_animation.get_positions(initial_conditions,params)
-	print positions, " the positions"
+	print np.shape(positions), " the positions"
+	print "end"
