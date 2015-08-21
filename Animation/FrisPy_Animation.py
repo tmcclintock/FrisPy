@@ -1,7 +1,7 @@
 from setup import setup,config
 import ctypes
 import numpy as np
-import animation_routines
+import make_visualizations
 import driver_interface_animation
 
 def FrisPy_Animation(config_filename):
@@ -32,6 +32,6 @@ def FrisPy_Animation(config_filename):
 	positions, n_times = driver_interface_animation.get_positions(initial_conditions,params)
 
 	#Pass the positions and number of times to the animation routines
-	animation_routines.make_plots(positions,n_times)
+	make_visualizations.make_plots(positions,n_times)
 
 	print "\nCompleting Animation\n"

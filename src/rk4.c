@@ -47,9 +47,9 @@ void rk4(double*positions,double dt,double t,double*coeffs){
 	equations_of_motion(temp,k4,t+dt,coeffs);
 
 	//Update the positions
-	for (i=0;i<12;i++)
+	for (i=0;i<12;i++){
 		positions[i] = positions[i] + dt/6.*(k1[i]+2.*k2[i]+2.*k3[i]+k4[i]);
-	
+	}
 	//End rk4
 	return;
 }

@@ -38,13 +38,13 @@ double CD(double a,double CD0,double CD1){
 double CRx(double wx,double CR1x){
   //Torque in the x-body direction (roll moment)
   //functoon of x-body angular velocity (roll angle)
-  return -CR1x*wx; //Hummell (2003) long flight
+  return -CR1x*wx;
 }
 
 double CRz(double wz,double CR1z){
-  //Torque in the x-body direction (roll moment)
+  //Torque in the z-body direction (roll moment)
   //function of z-body angular velocity (spin)
-  return -CR1z*wz;  //Hummell (2003)
+  return -CR1z*wz;
 }
 
 double CR(double wx,double wz,double CR1x,double CR1z){
@@ -66,7 +66,7 @@ double CMy(double wy,double CM1y){
 
 double CM(double a,double wy,double CM0,double CM1a,double CM1y){
   //Total y-body torque
-  return CM0 + CMa(a,CM1a) + CMy(wy,CM1y);
+  return -CM0 + CMa(a,CM1a) + CMy(wy,CM1y);
 }
 
 double CNz(double wz,double CN1z){

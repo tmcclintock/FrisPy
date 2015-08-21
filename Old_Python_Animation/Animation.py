@@ -84,7 +84,7 @@ def main():
     speed0 = 14.0    #m/s; initial speed
     phi0  = 0.0   #degrees; roll angle (+ means OI BH/IO FH, - is opposite)
     tht0 = 0.0       #degrees; polar angle tilt (- means the throw is airbounce-y)
-    fpAng0 = 5.0       #degrees; flight path angle between v and x-lab
+    fpAng0 = 0.0       #degrees; flight path angle between v and x-lab
     gamDot0 = -50.0    #rad/s; spin on the disc (- is BH, + is FH)
     xyang = 00.0     #angle between x-lab axis and velocity. This is useful for plotting
     tf = 3.2  #s; final time
@@ -281,7 +281,6 @@ def eqOfMotion(params,t):
     vp = v - C3*vC3
 
     #Calculate the angle of attack, alpha (alf)
-    #TOM: I THINK that I want -atan, but it might be +atan
     alf = -math.atan(vC3/np.linalg.norm(vp))
 
     #Find some unit vectors.
@@ -446,7 +445,7 @@ def plotTrajectory(solution,nsteps):
     lines_ani = animation.FuncAnimation(fig, updateTrajectory,
                                        nsteps,fargs=(trajectory,lines),
                                        interval=0.0001,blit=False)
-
+    print "nsteps = ",nsteps
     #lines_ani.save(throwname+'throw.gif',fps=20)
     plt.show()
 

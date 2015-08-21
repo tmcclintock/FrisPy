@@ -1,4 +1,3 @@
 params_file_name = params.txt
 initial_conditions_file_name = initial_conditions.txt
 data_file_name = test_data.txt
-

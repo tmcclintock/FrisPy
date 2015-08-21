@@ -15,18 +15,22 @@ def get_positions(initial_positions,coeffs):
 	coeffs = np.array(coeffs, dtype=np.double).copy()
 
 	#Convert the initial angles and angular velocities in degrees to radians
-	radians = np.pi/180.
-	initial_positions[7:] = initial_positions[7:]*radians
-	print initial_positions
+	radians = np.pi/180. #used to convert to radians
+	degrees = 180./np.pi #used to convert to degrees
+	initial_positions[6:] = initial_positions[6:]*radians
 
 	#Animations shouldn't have specified flight times,
 	#but since driver() takes one we specify a flight time
 	#that is way longer than anything we would expect
 	#a reasonable throw to take
-	flight_time = 1.0 #seconds
+	flight_time = 3.2 #seconds
+
+	#Set the timestep
+	#In the MCMC this will be smaller by a factor of at least 10
+	timestep = 0.01
 
 	#Number of time steps
-	n_times = 20
+	n_times = int(flight_time/timestep)
 
 	#Load the driver library and its funcitons
 	#Then specify the arguement and return types
@@ -49,9 +53,10 @@ def get_positions(initial_positions,coeffs):
 	co_out = coeffs.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 	ap_out = all_positions.ctypes.data_as(ctypes.POINTER(ctypes.c_double))
 
-	#Call the driver
+	#Call the driver and change back to degrees
 	driver(ip_out,co_out,flight_time,n_times,ap_out)
 	all_positions = np.array(ap_out[0:n_times*13]).reshape((n_times,13))
+	all_positions[:,6:]*=degrees
 
 	#Call the cleanup
 	#This is unnecessary since all_positions is declared in python

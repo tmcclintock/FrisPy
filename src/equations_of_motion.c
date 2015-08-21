@@ -40,6 +40,10 @@ void add(double*A,double *B,double *C){
   return;
 }
 
+void print_vec(double*A){
+  printf("A[0]=%e\tA[1]=%e\tA[2]=%e\tlen=%e\n",A[0],A[1],A[2],sqrt(dot(A,A)));
+}
+
 void equations_of_motion(double*positions,double*derivs,
 			    double t,
 			    double*coeffs){
@@ -99,16 +103,16 @@ void equations_of_motion(double*positions,double*derivs,
   //Find the velocity components in the body frame
   double v[]={vx,vy,vz};
   double v_dot_C3 = dot(v,C3);
-  double v_plane[] = {v[0]*(1-v_dot_C3),v[1]*(1-v_dot_C3),v[2]*(1-v_dot_C3)};
+  double v_plane[] = {v[0]-C3[0]*v_dot_C3, v[1]-C3[1]*v_dot_C3, v[2]-C3[2]*v_dot_C3};
 
   //Find the length of these various velocities
   double norm_v_plane = sqrt(dot(v_plane,v_plane));
   double norm_v = sqrt(dot(v,v));
-  double norm_vp = sqrt(dot(v_plane,v_plane));
+  //double norm_vp      = sqrt(dot(v_plane,v_plane));
 
   //Find the unit vectors for various directions
   double v_hat[] = {v[0]/norm_v,v[1]/norm_v,v[2]/norm_v};
-  double vp_hat[] = {v_plane[0]/norm_vp,v_plane[1]/norm_vp,v_plane[2],norm_vp};
+  double vp_hat[] = {v_plane[0]/norm_v_plane,v_plane[1]/norm_v_plane,v_plane[2]/norm_v_plane};
   double ulat[3];
   cross(C3,vp_hat,ulat);
 
@@ -124,13 +128,14 @@ void equations_of_motion(double*positions,double*derivs,
   double z_C_hat[] = {C3[0],C3[1],C3[2]};
 
   //Calculate the lift force
-  double Flift_amp = CL(alpha,CL0,CL1)*Area*rho*dot(v,v)/2.;
+  double aerodynamic_Force_amp = Area*rho*dot(v,v)/2;
+  double Flift_amp = CL(alpha,CL0,CL1)*aerodynamic_Force_amp;
   double Flift[3];
   cross(v_hat,y_C_hat,Flift);
   Flift[0] = Flift[0]*Flift_amp; Flift[1] = Flift[1]*Flift_amp; Flift[2] = Flift[2]*Flift_amp;
 
   //Calculate the drag force
-  double Fdrag_amp = CD(alpha,CD0,CD1)*Area*rho*dot(v,v)/2.;
+  double Fdrag_amp = CD(alpha,CD0,CD1)*aerodynamic_Force_amp;
   double Fdrag[]={-Fdrag_amp*v_hat[0],-Fdrag_amp*v_hat[1],-Fdrag_amp*v_hat[2]};
 
   //Calculate the gravitational force
@@ -180,7 +185,7 @@ void equations_of_motion(double*positions,double*derivs,
   for(i=0;i<3;i++){
     temp1 = 0;
     temp2 = 0;
-    for(j=0;j<3;j++){//{Tnc}^T dot w_in_C
+    for(j=0;j<3;j++){//Tnc dot tau_x(y)_body
       temp1+= Tnc[i][j] * tau_x[j];
       temp2+= Tnc[i][j] * tau_y[j];
     }
@@ -189,8 +194,9 @@ void equations_of_motion(double*positions,double*derivs,
   }
 
   //Calculate the total torque (aka moment) in the inertial frame
-  double tau_total[] = {tau_x_N[0]+tau_y_N[0],
-    tau_x_N[1]+tau_y_N[1],
+  double tau_total[] = {
+    tau_x_N[0]+tau_y_N[0]+tau_z_N[0],
+    tau_x_N[1]+tau_y_N[1]+tau_z_N[1],
     tau_x_N[2]+tau_y_N[2]+tau_z_N[2]};
 
   //If we want, set the torques all to 0

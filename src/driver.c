@@ -25,7 +25,7 @@ void driver(void*initial_positionav,void*coeffsav,double flight_time,int n_times
 	//Calculate the time step
 	double dt = flight_time/n_times;
 
-	printf("Timestep = %e\n",dt);
+	printf("\tTimestep = %e\n",dt);
 
 	//Declare the current time
 	double t=0;
