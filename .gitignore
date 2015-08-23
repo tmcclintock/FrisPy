@@ -1,0 +1,6 @@
+# Compiled C
+*.o
+*.so
+
+#Compiled Python
+*.pyc

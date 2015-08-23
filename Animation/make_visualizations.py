@@ -27,10 +27,10 @@ def make_plots(positions, n_times):
 	print "\tUseful indicies: ",in_air_indexes[0][0]," through ",in_air_indexes[0][-1]
 
 	#Plot Z vs X
-	#animation_routines.plot_Z_vs_X(x,z,in_air_indexes)
+	animation_routines.plot_Z_vs_X(x,z,in_air_indexes)
 
 	#Plot X vs Y
-	#animation_routines.plot_X_vs_Y(x,y,in_air_indexes)
+	animation_routines.plot_X_vs_Y(x,y,in_air_indexes)
 
 	#Plot phi(t) and theat(t)
 	animation_routines.plot_angles(phi,theta,t,in_air_indexes)
