@@ -46,8 +46,8 @@ by the user.
 In order to run in animation mode you must first compile the C source
 code that does all the heavy lifting. From the home directory:
 
-cd src
-make
+cd src  
+make  
 cd ..
 
 This makes the shared library src/driver.so and takes you back to FrisPy/.
