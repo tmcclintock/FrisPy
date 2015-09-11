@@ -71,5 +71,5 @@ too long to return results on some machines, so I have decided to rewrite the
 math intensive parts in C. The pure python version can be found 
 in the subdirectory Old_Python_Animation/. In order to run this, you use:
 
-cd Old_Python_Animation/
+cd Old_Python_Animation  
 python Animation.py
