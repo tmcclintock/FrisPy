@@ -7,7 +7,7 @@ import numpy as np
 def get_positions(initial_positions,coeffs):
 	print "\nInside of get_positions"
 
-	#Change these to copies numpy arrays so that
+	#Change these to copied numpy arrays so that
 	#it is gauranteed that they are contiguous in memory
 	#This is a REQUIREMENT for arrays in c and isn't
 	#fulfilled in python
