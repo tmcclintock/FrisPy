@@ -20,7 +20,7 @@ def plot_X_vs_Y(x,y,ind):
 	fig = plt.figure()
 	ax1 = plt.subplot(111)
 	ax1.plot(x[ind],y[ind])
-	ax1.set_ylim(0,max(y[ind]))
+	#ax1.set_ylim(0,max(np.fabs(y[ind])))
 	ax1.set_xlabel("X (m)")
 	ax1.set_ylabel("Y (m)")
 	plt.show()

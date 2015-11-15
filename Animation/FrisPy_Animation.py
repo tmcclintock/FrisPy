@@ -3,7 +3,7 @@ import ctypes
 import numpy as np
 import make_visualizations
 import driver_interface_animation
-#import output_trajectory #IN PROGRESS
+import output_trajectory
 
 def FrisPy_Animation(config_filename):
 	#Parse the configuration file
@@ -29,7 +29,7 @@ def FrisPy_Animation(config_filename):
 
 	#Write positions to a file. This will be commented out
         #when testing is not underway
-        #write_trajectory_to_file(all_positions)
+        output_trajectory.write_trajectory_to_file(positions,n_times)
 
 	#Pass the positions and number of times to the animation routines
 	make_visualizations.make_plots(positions,n_times)
