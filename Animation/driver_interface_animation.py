@@ -57,11 +57,7 @@ def get_positions(initial_positions,coeffs):
 	driver(ip_out,co_out,flight_time,n_times,ap_out)
 	all_positions = np.array(ap_out[0:n_times*13]).reshape((n_times,13))
 	all_positions[:,6:]*=degrees
-
-	#Call the cleanup
-	#This is unnecessary since all_positions is declared in python
-	#cleanup(all_positions)
-	
+        
 	#Return the entire position array
 	print "Returning positions array with shape:"
 	print "\t",np.shape(all_positions)
