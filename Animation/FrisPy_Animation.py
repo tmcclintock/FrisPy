@@ -24,11 +24,6 @@ def FrisPy_Animation(config_filename):
 				    (params_file_name,
 				     initial_conditions_file_name)
 
-	#Recall that params and initial conditions are both dict() objects
-	#They need to be checked for values and converted to arrays
-	#setup.check_params(params)
-	#setup.check_initial_conditions(initial_conditions)
-	
 	#Pass the parameters and conditions to the driver routine
 	positions, n_times = driver_interface_animation.get_positions(initial_conditions,params)
 
@@ -40,3 +35,4 @@ def FrisPy_Animation(config_filename):
 	make_visualizations.make_plots(positions,n_times)
 
 	print "\nCompleting Animation\n"
+	return

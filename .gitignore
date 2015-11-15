@@ -4,3 +4,6 @@
 
 #Compiled Python
 *.pyc
+
+#Backup files
+*~

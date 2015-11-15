@@ -41,15 +41,15 @@ def read_initial_conditions(initial_conditions_file_name):
 	return ic_out
 
 #Return a dictionary of the contents of the data file
-def read_data(data_file_name):
+def read_flight_data(flight_data_file_name):
 	import numpy as np
 
 	#Read in the flight data
-	data_path = 'data/'+data_file_name
-	flight_data = np.genfromtxt(data_path,names=True)
+	flight_data_path = 'data/'+flight_data_file_name
+	flight_data = np.genfromtxt(flight_data_path,names=True)
 
 	print '\nFlight data recieved from:'
-	print '\t',data_path
+	print '\t',flight_data_path
 	print '\nData recieved for:'
 	print '\t',flight_data.dtype.names
 
@@ -58,10 +58,10 @@ def read_data(data_file_name):
 	return flight_data
 
 #Return the dictionaries of the contents of the params and data files.
-def read_params_and_data(params_file_name,data_file_name):
+def read_params_and_flight_data(params_file_name,flight_data_file_name):
 	#Read the params and flight data
 	params = read_params(params_file_name)
-	flight_data = read_data(data_file_name)
+	flight_data = read_flight_data(flight_data_file_name)
 
 	#Return the dictionary objects for both the parameters
 	#and the flight data
