@@ -1,7 +1,7 @@
 from setup import setup,config
 import ctypes
 import numpy as np
-import driver_interface_mcmc
+import start_mcmc
 #import mcmc_analysis as analysis
 
 def FrisPy_MCMC(config_filename):
@@ -26,7 +26,7 @@ def FrisPy_MCMC(config_filename):
 	names = flight_data.dtype.names
 
 	#Perform the MCMC
-	samples,likelihoods = driver_interface_mcmc.perform_mcmc(\
+	samples,likelihoods = start_mcmc.perform_mcmc(\
 		names,flight_data,params)
 
 	#Create plots
