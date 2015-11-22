@@ -17,8 +17,9 @@ def FrisPy_MCMC(config_filename):
 	#Read in the flight data
 	params_file_name = conf['params_file_name']
 	flight_data_file_name = conf['flight_data_file_name']
-	params,flight_data = setup.read_params_and_flight_data(\
-		params_file_name,flight_data_file_name)
+        initial_conditions_file_name = conf['initial_conditions_file_name']
+	params,flight_data =setup.read_params_and_flight_data(params_file_name,flight_data_file_name)
+        initial_conditions = setup.read_initial_conditions(initial_conditions_file_name)
 	
 	#flight_data is a numpy.ndarray with names,
         #while params is an array, so the flight
@@ -27,7 +28,7 @@ def FrisPy_MCMC(config_filename):
 
 	#Perform the MCMC
 	samples,likelihoods = start_mcmc.perform_mcmc(\
-		names,flight_data,params)
+		names,flight_data,initial_conditions,params)
 
 	#Create plots
 	#analyze_samples.analysis(samples,likelihoods,names,flight_data,params)

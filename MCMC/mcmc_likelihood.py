@@ -1,5 +1,5 @@
 import numpy as np
-from scipy import interpolate.InterpolatedUnivariateSpline as IUS
+from scipy.interpolate import InterpolatedUnivariateSpline as IUS
 import driver_interface_mcmc
 
 #This is a likelihood function that minimizes the percent difference
