@@ -2,7 +2,7 @@ from setup import setup,config
 import ctypes
 import numpy as np
 import start_mcmc
-#import mcmc_analysis as analysis
+import mcmc_analysis
 
 def FrisPy_MCMC(config_filename):
 	#Parse config file
@@ -31,7 +31,7 @@ def FrisPy_MCMC(config_filename):
 		names,flight_data,initial_conditions,params)
 
 	#Create plots
-	#analyze_samples.analysis(samples,likelihoods,names,flight_data,params)
+	mcmc_analysis.analysis(samples,likelihoods,names,flight_data,params)
 
 	print "\nCompleting MCMC\n"
 	return

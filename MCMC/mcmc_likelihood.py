@@ -4,12 +4,12 @@ import driver_interface_mcmc
 
 #This is a likelihood function that minimizes the percent difference
 #between the observed trajectory and the model trajectory
-def lnlike(positions,params):
-    #Extract the parameters
-    initial_positions,coeffs = params
+def lnlike(coeffs,params):
+    #Extract the parameters, the initial conditions and the trajectory
+    initial_conditions,positions = params
 
     #Make the model
-    #model_trajectory,n_times = driver_interface_mcmc.get_positions(initial_positions,coeffs)
+    model_trajectory,n_times = driver_interface_mcmc.get_positions(initial_conditions,coeffs)
 
     #Isolate the trajectory that matches the data (i.e. get rid of angles)
 
