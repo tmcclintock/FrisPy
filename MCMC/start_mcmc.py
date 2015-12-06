@@ -7,7 +7,10 @@ import mcmc_likelihood as likelihood
 def perform_mcmc(names,flight_data,initial_conditions,coeffs):
 	print "\nPerforming an MCMC search using data for:\n\t",names
 
-        #Set up the 
+        #Set up the parameters list
+        #NOTE: this design needs to be changed and have the initial
+        #angles added as parameters
+        #then the angles can be re-added to the initial_conditions list later
         mc_params = [initial_conditions,flight_data]
 
         #Define the number of dimensions and walkers and number of steps
