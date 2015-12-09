@@ -20,6 +20,7 @@ def perform_mcmc(names,flight_data,initial_conditions,coeffs):
         nsteps = 3*nburnin
 
         #Define the initial positions of the walkers around the coeffs
+        p0 = [(np.random.randn(ndim)+coeffs) for i in range(nwalkers)]
 
         #Set up the sampler
         sampler = emcee.EnsembleSampler(nwalkers,ndim,likelihood.lnlike,args=mc_params)
