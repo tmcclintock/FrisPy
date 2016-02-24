@@ -46,20 +46,16 @@ by the user.
 In order to run in animation mode you must first compile the C source
 code that does all the heavy lifting. From the home directory:
 
-cd src  
-make  
+cd src
+make
 cd ..
 
-This makes the shared library src/driver.so and takes you back to FrisPy/.
-This requires gcc to be installed on your machine.
+This makes the shared library src/rk4.so and takes you back to FrisPy/.
 Then, in order to actually run in animation mode:
 
 python FrisPy.py animation config_file
 
-The configuration file config_file contains the information that tells the
-program what initial conditions to start with, what coefficients to use
-in the calculation, and in the case where real data is provided it contains
-the actual trajectory to animate.
+The configuration file config_file contains the information
 
 In order to run in flight analysis mode, one would run:
 
@@ -68,8 +64,5 @@ IN PROGRESS
 # Pure-Python Implementation
 A slower, pure python implementation of this code has been written, but it takes
 too long to return results on some machines, so I have decided to rewrite the 
-math intensive parts in C. The pure python version can be found 
-in the subdirectory Old_Python_Animation/. In order to run this, you use:
-
-cd Old_Python_Animation  
-python Animation.py
+math intensive parts in C. The pure python version can be found in the subdirectory
+Old_Python_Animation/. IN PROGRESS
