@@ -23,7 +23,7 @@ def get_positions(initial_positions,coeffs):
 	#but since driver() takes one we specify a flight time
 	#that is way longer than anything we would expect
 	#a reasonable throw to take
-	flight_time = 3.2 #seconds
+	flight_time = 0.02 #seconds
 
 	#Set the timestep
 	#In the MCMC this will be smaller by a factor of at least 10

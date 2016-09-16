@@ -121,6 +121,8 @@ void equations_of_motion(double*positions,double*derivs,
   //it should have a positive angle of attack even though vz_C
   //would be negative.
   double alpha = -atan(v_dot_C3/norm_v_plane);
+  printf("zbhat = %e, %e, %e\n",C3[0],C3[1],C3[2]);
+  //printf("alpha = %e\tzcomp = %e\tnorm = %e\n\n",alpha,v_dot_C3,norm_v_plane);
 
   //Make copies of some of the arrays, mostly so that it is easier to see what is happening
   double x_C_hat[] = {vp_hat[0],vp_hat[1],vp_hat[2]};
@@ -132,17 +134,27 @@ void equations_of_motion(double*positions,double*derivs,
   double Flift_amp = CL(alpha,CL0,CL1)*aerodynamic_Force_amp;
   double Flift[3];
   cross(v_hat,y_C_hat,Flift);
+  printf("uFl0 = %e\tuFl1 = %e\tuFl2 = %e\n",Flift[0],Flift[1],Flift[2]);
+  printf("FL_amp = %e\n",CL(alpha,CL0,CL1)*aerodynamic_Force_amp);
   Flift[0] = Flift[0]*Flift_amp; Flift[1] = Flift[1]*Flift_amp; Flift[2] = Flift[2]*Flift_amp;
 
   //Calculate the drag force
   double Fdrag_amp = CD(alpha,CD0,CD1)*aerodynamic_Force_amp;
   double Fdrag[]={-Fdrag_amp*v_hat[0],-Fdrag_amp*v_hat[1],-Fdrag_amp*v_hat[2]};
 
+  printf("Cl = %e\nCD = %e\n",CL(alpha,CL0,CL1),CD(alpha,CD0,CD1));
+  printf("alpha = %e, CL0 = %e, CL1 = %e\n",alpha,CL0,CL1);
+  printf("Aero_force_amp = %e\n\n",aerodynamic_Force_amp);
+  //printf("Liftamp = %e\nDragamp = %e\n\n",Flift_amp,Fdrag_amp);
+
   //Calculate the gravitational force
   double Fgrav[]={0,0,-m*g};
 
   //Sum the forces to get the total force
   double Ftot[] = {Flift[0]+Fdrag[0],Flift[1]+Fdrag[1],Flift[2]+Fdrag[2]+Fgrav[2]};
+  //printf("Lift: %e\t%e\t%e\n",Flift[0],Flift[1],Flift[2]);
+  //printf("Drag: %e\t%e\t%e\n",Fdrag[0],Fdrag[1],Fdrag[2]);
+  //printf("Grav: %e\t%e\t%e\n\n",Fgrav[0],Fgrav[1],Fgrav[2]);
 
   //Write the angular velocities in the body frame
   double w_in_C[] = {phiDot*c_tht, thetaDot, phiDot*s_tht + gammaDot};

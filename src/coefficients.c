@@ -24,7 +24,7 @@ double CL(double a,double CL0,double CL1){
 double CDa(double a,double CD1){
   //Drag force coefficient
   //function of angle of attack
-  double a0 = M_PI/45.0;
+  double a0 = M_PI/45.0; // This is also 4 degrees
   //According to Hummell (2003) this is the angle for which minimal drag is
   //achieved. This actually comes from data.
   return CD1*(a-a0)*(a-a0); //Hummell (2003)

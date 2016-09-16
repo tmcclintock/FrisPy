@@ -26,8 +26,11 @@ void rk4(double*positions,double dt,double t,double*coeffs){
 	equations_of_motion(positions,k1,t,coeffs);
 
 	//Calculate the temp array
-	for(i=0;i<12;i++)
+	for(i=0;i<12;i++){
 		temp[i] = positions[i]+dt/2.*k1[i];
+		printf("%e\t",k1[i]);
+	}
+	printf("\n");
 
 	//Find the derivatives at t+dt/2 for k2
 	equations_of_motion(temp,k2,t+dt/2.,coeffs);
