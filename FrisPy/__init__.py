@@ -5,7 +5,7 @@ FrisPy is a simple, pure Python implementation of a physical model for a flying 
 from disc import *
 
 __author__ = "Tom McClintock <tmcclintock89@gmail.com>"
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 def create_disc(initial_conditions = None, filename = None, debug=False):
     """Create a disc object and return it to the user.
