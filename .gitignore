@@ -1,3 +1,8 @@
+#Ignore
+*.egg-info
+build
+dist
+
 # Compiled C
 *.o
 *.so
