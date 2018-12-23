@@ -1,5 +1,3 @@
-import sys, os, glob
-import setuptools
 from setuptools import setup
 
 dist = setup(name="FrisPy",

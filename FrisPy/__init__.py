@@ -2,7 +2,7 @@
 FrisPy is a simple, pure Python implementation of a physical model for a flying disc (frisbee). The default configuration is for a 175 g Ultrastar.
 """
 
-from disc import *
+from .disc import *
 
 __author__ = "Tom McClintock <tmcclintock89@gmail.com>"
 __version__ = "1.0.0"
