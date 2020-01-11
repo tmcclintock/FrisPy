@@ -9,7 +9,7 @@ def test_Disc():
 
 def test_Disc_initialization_configurations():
     def_args = {'air_density':1.225, 'area':0.057,
-               'diameter':0.2693968337785437, 'g':9.81,
+               'diameter':2*(0.057/np.pi)**0.5, 'g':9.81,
                'grav_vector':np.array([0,0,-1]),
                'I_zz':0.002352, 'I_xx':0.001219,
                'mass':0.175}
