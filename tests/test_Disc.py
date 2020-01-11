@@ -20,3 +20,9 @@ def test_defaults():
 
     for i, (k, v) in enumerate(zip(allowed_keys, default_values)):
         npt.assert_equal(getattr(d, k), default_values[i])
+
+def test_Disc_trajectory():
+    d = FrisPy.Disc()
+    npt.assert_equal(hasattr(d, "_trajectory"), True)
+    npt.assert_equal(hasattr(d, "initialize_trajectory"), True)
+    npt.assert_equal(hasattr(d, "compute_trajectory"), True)

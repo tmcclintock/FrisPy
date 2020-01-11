@@ -1,5 +1,6 @@
 import numpy as np
 
+from .trajectory import Trajectory
 #from .disc import * #not PEP8 compliant
 
 class Disc(object):
@@ -8,7 +9,7 @@ class Disc(object):
     air density). Note that the default area, mass, and inertial moments are for
     Discraft Ultrastars (175 grams or 0.175 kg).
 
-    All masses are kg, lengths are meters (m) and times are seconds. That is,
+    All masses are kg, lengths are meters (m) and times are seconds (s). That is,
     these files all use `mks` units.
 
     air_density (float): default is 1.225 kg/m^3
@@ -34,7 +35,18 @@ class Disc(object):
         # and update the given keys by their given values
         self.__dict__.update((key, value) for key, value in kwargs.items() if key in allowed_keys)
 
+        #Attach an uninitialized trajectory object
+        self._trajectory = Trajectory()
 
+    def initialize_trajectory(self):
+        pass
+
+    def compute_trajectory(self):
+        pass
+
+    def set_model(self):
+        pass
+        
 if __name__ == "__main__":
     d = Disc()
     print(d)
