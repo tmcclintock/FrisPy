@@ -7,7 +7,7 @@ def test_Disc():
     #Smoke test
     d = FrisPy.Disc()
 
-def test_initialization_configurations():
+def test_Disc_initialization_configurations():
     def_args = {'air_density':1.225, 'area':0.057,
                'diameter':0.2693968337785437, 'g':9.81,
                'grav_vector':np.array([0,0,-1]),
