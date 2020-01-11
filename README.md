@@ -1,3 +1,6 @@
+# FrisPy [![Build Status](https://travis-ci.com/tmcclintock/FrisPy.svg?branch=v2)](https://travis-ci.com/tmcclintock/FrisPy)
+
+
 FrisPy
 =========
 
