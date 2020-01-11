@@ -40,10 +40,10 @@ class Disc(object):
                              kwargs.items() if key in allowed_keys)
 
         #Attach an uninitialized trajectory object
-        self._trajectory = Trajectory()
+        self.initialize_trajectory()
 
-    def initialize_trajectory(self):
-        pass
+    def initialize_trajectory(self, **kwargs):
+        self._trajectory = Trajectory(**kwargs)
 
     def compute_trajectory(self):
         pass
