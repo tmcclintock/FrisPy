@@ -7,6 +7,28 @@ def test_Disc():
     #Smoke test
     d = FrisPy.Disc()
 
+def test_initialization_configurations():
+    def_args = {'air_density':1.225, 'area':0.057,
+               'diameter':0.2693968337785437, 'g':9.81,
+               'grav_vector':np.array([0,0,-1]),
+               'I_zz':0.002352, 'I_xx':0.001219,
+               'mass':0.175}
+
+    allowed_keys = ['air_density', 'area', 'diameter', 'g',
+                    'grav_vector', 'I_zz', 'I_xx', 'mass']
+    default_values = [1.225, 0.057, 9.81,
+                      np.array([0,0,-1]), 0.002352, 0.001219, 0.175]
+    default_values.insert(2, 2*(default_values[1]/np.pi)**0.5)
+
+    #Smoke tests initializing with all but one parameter
+    for key in def_args.keys():
+        args = def_args.copy()
+        args.pop(key)
+        assert key not in args
+        d = FrisPy.Disc(**args)
+        for i, (k, v) in enumerate(zip(allowed_keys, default_values)):
+            npt.assert_equal(getattr(d, k), default_values[i])
+
 def test_Disc_defaults():
     #Test that the default attributes for an ultrastar
     #are correctly set
