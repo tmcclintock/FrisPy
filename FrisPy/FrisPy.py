@@ -48,8 +48,11 @@ class Disc(object):
     def compute_trajectory(self):
         pass
 
-    def set_model(self):
-        pass
+    def set_model(self, **kwargs):
+        self._trajectory.set_model(**kwargs)
+
+    def get_model(self):
+        return self._trajectory.get_model()
         
 if __name__ == "__main__":
     d = Disc()
