@@ -1,6 +1,8 @@
-import numpy as np
+"""Physical model for the forces and torques on a disc."""
 
-class Model(object):
+#import numpy as np
+
+class Model():
     """Coefficient model for a disc. Holds all of the aerodynamic
     parameters coupling the kinematic variables (spins and angles)
     to the force magnitudes.
@@ -16,3 +18,8 @@ class Model(object):
         self.__dict__.update((key, value) for key, value in
                              kwargs.items() if key in allowed_keys)
 
+    def set_values(self, **kwargs):
+        """Set the values of the physics model."""
+
+    def func1(self):
+        """A function to write."""
