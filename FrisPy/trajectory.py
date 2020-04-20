@@ -1,3 +1,7 @@
+"""An object for holding an interface to the differential equation solver
+for the disc trajectory.
+"""
+
 import numpy as np
 
 from .model import Model
@@ -53,3 +57,6 @@ class Trajectory(object):
             None
         """
         self._model.set_values(**kwargs)
+
+    def get_model(self):
+        return self._model
