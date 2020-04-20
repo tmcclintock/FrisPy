@@ -4,6 +4,8 @@ build
 dist
 *.ipynb_checkpoints
 
+.mypy*
+
 # Compiled C
 *.o
 *.so
