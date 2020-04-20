@@ -2,6 +2,8 @@
 
 #import numpy as np
 
+from typing import Dict
+
 class Model():
     """Coefficient model for a disc. Holds all of the aerodynamic
     parameters coupling the kinematic variables (spins and angles)
@@ -18,8 +20,8 @@ class Model():
         self.__dict__.update((key, value) for key, value in
                              kwargs.items() if key in allowed_keys)
 
-    def set_values(self, **kwargs):
+    def set_values(self, **kwargs: Dict[str, float]) -> None:
         """Set the values of the physics model."""
 
-    def func1(self):
+    def func1(self) -> None:
         """A function to write."""
