@@ -1,14 +1,14 @@
 """
-This file contains the disc object, which interfaces with the equations of motion to compute trajectories.
+This file contains the disc object, which interfaces 
+with the equations of motion to compute trajectories.
 """
 
 import numpy as np
 from scipy.integrate import odeint
-import coefficient_model
+from . import coefficient_model
 
 """
 Constants:
-PI
 rho: density of air; kg/m^3
 area: area of a disc; m^2
 diameter: diameter of a disc; m
@@ -26,7 +26,6 @@ Izz = 0.002352
 Ixx = Iyy = Ixy = 0.001219
 diameter = 2 * (area / np.pi) ** 0.5
 F_gravity = mass * g * np.array([0.0, 0.0, -1.0])
-
 
 class Disc(object):
     def __init__(
@@ -111,7 +110,7 @@ class Disc(object):
 
     def update_coordinates(self, coordinates):
         """Given some new coordinates, update the coordinates
-    """
+        """
         x, y, z, vx, vy, vz, phi, theta, gamma, phidot, thetadot, gammadot = coordinates
         self.x = x
         self.y = y
@@ -130,7 +129,7 @@ class Disc(object):
 
     def get_coordinates(self):
         """Return the current coordinates of the disc.
-    """
+        """
         return np.array(
             [
                 self.x,
@@ -150,7 +149,7 @@ class Disc(object):
 
     def update_data_fields(self):
         """Update the data fields in the disc.
-    """
+        """
         self.calc_trig_functions()
         self.velocity = np.array([self.vx, self.vy, self.vz])
         self.angle_dots = np.array([self.phidot, self.thetadot, self.gammadot])
@@ -168,7 +167,7 @@ class Disc(object):
 
     def calc_trig_functions(self):
         """Calculates the trig functions of the euler angles of the disc.
-    """
+        """
         self.sin_phi = np.sin(self.phi)
         self.cos_phi = np.cos(self.phi)
         self.sin_theta = np.sin(self.theta)
@@ -177,17 +176,18 @@ class Disc(object):
 
     def calc_rotation_matrix(self):
         """Calculates the euler rotation matrix.
-    R(phi,theta) = Ry(theta)Rx(phi)
-    
-    See https://en.wikipedia.org/wiki/Davenport_chained_rotations. 
-    """
+        R(phi,theta) = Ry(theta)Rx(phi)
+
+        See https://en.wikipedia.org/wiki/Davenport_chained_rotations. 
+        """
         sp, cp = self.sin_phi, self.cos_phi
         st, ct = self.sin_theta, self.cos_theta
         return np.array([[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]])
 
     def calc_body_hat_vectors(self):
-        """Calculates the unit (hat) vectors fixed to the disc (excluding spin) in terms of the lab frame, or [R^T dot \hat{x}_F]
-    """
+        """Calculates the unit (hat) vectors fixed to the disc 
+        (excluding spin) in terms of the lab frame, or [R^T dot \hat{x}_F].
+        """
         v = self.velocity
         zbhat = self.rotation_matrix[2]  # z body hat, expressed in the lab frame
         v_dot_zbhat = np.dot(v, zbhat)
@@ -199,8 +199,9 @@ class Disc(object):
         return [xbhat, ybhat, zbhat]
 
     def calc_angle_of_attack(self):
-        """Calculates angle of attack (AOA). AOA is defined as between plane of the disc and the velocity vector.
-    """
+        """Calculates angle of attack (AOA). 
+        AOA is defined as between plane of the disc and the velocity vector.
+        """
         v = self.velocity
         zbhat = self.zbhat
         v_dot_zbhat = np.dot(v, zbhat)
@@ -208,18 +209,20 @@ class Disc(object):
         return -np.arctan(v_dot_zbhat / np.linalg.norm(v_in_plane))
 
     def calc_angular_velocity_frisframe(self):
-        """Calculates the angular velocity as seen in the disc frame. This is \vec{w}, not \vec{w}_F. See Hummel 2003 page 34.
+        """Calculates the angular velocity as seen in the disc frame. 
+        This is \vec{w}, not \vec{w}_F. See Hummel 2003 page 34.
 
-    Note: \vec{w} \dot R gives the angular velocity in the lab frame.
-    """
+        Note: \vec{w} \dot R gives the angular velocity in the lab frame.
+        """
         st, ct = self.sin_theta, self.cos_theta
         return np.array(
             [self.phidot * ct, self.thetadot, self.phidot * st + self.gammadot]
         )
 
     def calc_angular_velocity(self):
-        """Calculates the angular velocity along the body unit vectors as expressed in the lab frame.
-    """
+        """Calculates the angular velocity along the body unit vectors 
+        as expressed in the lab frame.
+        """
         av_labframe = self.angular_velocity_labframe
         xbhat, ybhat, zbhat = self.xbhat, self.ybhat, self.zbhat
         wxb = np.dot(av_labframe, xbhat)
@@ -229,7 +232,7 @@ class Disc(object):
 
     def get_acceleration(self):
         """Calculate acceleration of the positions.
-    """
+        """
         alpha, v2 = self.angle_of_attack, self.v2
         vhat, ybhat = self.vhat, self.ybhat
         force_amplitude = 0.5 * rho * area * v2
@@ -239,18 +242,18 @@ class Disc(object):
         F_drag = C_drag * force_amplitude * (-vhat)
         total_force = F_lift + F_drag + F_gravity
         if self.debug:
-            print "In get_acceleration:"
-            print "\tC_lift:", C_lift
-            print "\tC_drag:", C_drag
-            print "\tAmplitude:", force_amplitude
-            print "\tF_lift:", F_lift
-            print "\tF_drag:", F_drag
-            print "\tF_grav:", F_gravity
+            print("In get_acceleration:")
+            print("\tC_lift:", C_lift)
+            print("\tC_drag:", C_drag)
+            print("\tAmplitude:", force_amplitude)
+            print("\tF_lift:", F_lift)
+            print("\tF_drag:", F_drag)
+            print("\tF_grav:", F_gravity)
         return total_force / mass
 
     def get_torque(self):
         """Calculates the torques (moments) on the disc.
-    """
+        """
         alpha = self.angle_of_attack
         v2 = self.v2
         torque_amplitude = 0.5 * rho * diameter * area * v2
@@ -266,30 +269,31 @@ class Disc(object):
         # Optional: turn off rotations
         # total_torque *= 0
         if self.debug:
-            print "In get_torque"
-            print "\tAmplitude:", torque_amplitude
+            print("In get_torque")
+            print("\tAmplitude:", torque_amplitude)
             xbhat, ybhat, zbhat = self.xbhat, self.ybhat, self.zbhat
             avf = self.angular_velocity_frisframe
             avl = self.angular_velocity_labframe
             R = self.rotation_matrix
-            print "\tavf: ", avf
-            print "\tC1:", R[0]
-            print "\tC2:", R[1]
-            print "\tC3:", R[2]
-            print "\tavl: ", avl
-            print "\txbhat = ", xbhat
-            print "\tybhat = ", ybhat
-            print "\tzbhat = ", zbhat
-            print "\twx = %.2e\twy = %.2e\twz = %.2e" % (wxb, wyb, wzb)
-            print "\tRoll amp:", C_x * torque_amplitude
-            print "\tPitch amp:", C_y * torque_amplitude
-            print "\tSpin amp:", C_z * torque_amplitude
-            print "\ttotal_torque:", total_torque
+            print("\tavf: ", avf)
+            print("\tC1:", R[0])
+            print("\tC2:", R[1])
+            print("\tC3:", R[2])
+            print("\tavl: ", avl)
+            print("\txbhat = ", xbhat)
+            print("\tybhat = ", ybhat)
+            print("\tzbhat = ", zbhat)
+            print("\twx = %.2e\twy = %.2e\twz = %.2e" % (wxb, wyb, wzb))
+            print("\tRoll amp:", C_x * torque_amplitude)
+            print("\tPitch amp:", C_y * torque_amplitude)
+            print("\tSpin amp:", C_z * torque_amplitude)
+            print("\ttotal_torque:", total_torque)
         return total_torque
 
     def ang_acceleration(self):
-        """Calculate angular accelerations in radians/s^2. See, e.g. Hummel 2003.
-    """
+        """Calculate angular accelerations in radians/s^2. 
+        See, e.g. Hummel 2003.
+        """
         total_torque = self.get_torque()
         st, ct = self.sin_theta, self.cos_theta
         phidot, thetadot, gammadot = self.phidot, self.thetadot, self.gammadot
@@ -307,43 +311,45 @@ class Disc(object):
             total_torque[2] - Izz * (phidot * thetadot * ct + phi_dd * st)
         ) / Izz
         if self.debug:
-            print "In ang_acceleration:"
-            print "\tphi_dd:", 2 * Ixy * thetadot * phidot * st, Izz * thetadot * (
+            print("In ang_acceleration:")
+            print("\tphi_dd:", 2 * Ixy * thetadot * phidot * st, Izz * thetadot * (
                 phidot * st + gammadot
-            )
-            print "\ttheta_dd:", Izz * phidot * ct * (
+            ))
+            print("\ttheta_dd:", Izz * phidot * ct * (
                 phidot * st + gammadot
-            ), Ixy * phidot ** 2 * ct * st
-            print "\tgamma_dd:", -Izz * (phidot * thetadot * ct + phi_dd * st)
+            ), Ixy * phidot ** 2 * ct * st)
+            print("\tgamma_dd:", -Izz * (phidot * thetadot * ct + phi_dd * st))
         return np.array([phi_dd, theta_dd, gamma_dd])
 
     def derivatives_array(self):
         """Compute the derivatives of all coordinates.
-    """
+        """
         derivatives = np.zeros(12)
         derivatives[0:3] = self.velocity
         derivatives[3:6] = self.get_acceleration()
         derivatives[6:9] = self.angle_dots
         derivatives[9:12] = self.ang_acceleration()
         if self.debug:
-            print "In derivatives_array:"
-            print "\tvelocities: ", derivatives[0:3]
-            print "\tforces/m: ", derivatives[3:6]
-            print "\tangle dots: ", derivatives[6:9]
-            print "\tang_accs: ", derivatives[9:12]
+            print("In derivatives_array:")
+            print("\tvelocities: ", derivatives[0:3])
+            print("\tforces/m: ", derivatives[3:6])
+            print("\tangle dots: ", derivatives[6:9])
+            print("\tang_accs: ", derivatives[9:12])
         return derivatives
 
     def equations_of_motion(self, coordinates, t):
         """Return the equations of motion. For use with scipy integrators.
-    """
+        """
         self.update_coordinates(coordinates)
         if self.z <= 0.0:
             return np.zeros_like(coordinates)
         return self.derivatives_array()
 
     def get_trajectory(self, time_initial, time_final, dt=0.001, full_trajectory=False):
-        """Get a disc's trajectory give an initial and final time. The timestep size can be specified. This requires that the disc hass been properly initialized with a model.
-    """
+        """Get a disc's trajectory give an initial and final time. 
+        The timestep size can be specified. 
+        This requires that the disc hass been properly initialized with a model.
+        """
         if not self.has_model:
             raise Exception("No disc model initialized. Call initialize_model().")
         coordinates = self.get_coordinates()
@@ -369,7 +375,7 @@ if __name__ == "__main__":
     )
     test_disc.initialize_model()
 
-    print test_disc
+    print(test_disc)
 
     # Integrating a disc's equations of motion
     from scipy.integrate import odeint
@@ -390,7 +396,7 @@ if __name__ == "__main__":
     times, trajectory = test_disc.get_trajectory(
         0.0, 3.0, dt=0.0001, full_trajectory=False
     )
-    print "Integrating the equations of motion at 30 time steps gives the trajectory"
+    print("Integrating the equations of motion at 30 time steps gives the trajectory")
     x, y, z = trajectory.T
     # x,y,z = trajectory[:,:3].T #If full_trajetory=True
 
@@ -401,4 +407,4 @@ if __name__ == "__main__":
         plt.plot(x, z)
         plt.show()
     except ImportError:
-        print "Failed to import matplotlib"
+        print("Failed to import matplotlib")
