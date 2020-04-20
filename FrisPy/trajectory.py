@@ -2,11 +2,11 @@
 for the disc trajectory.
 """
 
-import numpy as np
+#import numpy as np
 
 from .model import Model
 
-class Trajectory(object):
+class Trajectory():
     """Trajectory of a disc object. This object contains the initial
     values, and computed values for the kinematic variables of
     the disc including the position, velocities, angles, and
@@ -47,7 +47,7 @@ class Trajectory(object):
         self._model = Model()
 
     def set_model(self, **kwargs):
-        """Update the values of parameters in the 
+        """Update the values of parameters in the
         coefficient model.
 
         Args:
@@ -59,4 +59,5 @@ class Trajectory(object):
         self._model.set_values(**kwargs)
 
     def get_model(self):
+        """Return the model object."""
         return self._model
