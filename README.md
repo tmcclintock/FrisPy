@@ -6,10 +6,17 @@ This is a pure Python rebuild of the old FrisPy code, which included a version o
 
 ## Installation
 
-To install, at the command line just type:
-
+First install the requirements using an `anaconda` environment:
+```bash
+conda create env -f environment.yml
+```
+Then install the package with
 ```bash
 python setup.py install
+```
+Verify your installation with
+```bash
+pytest
 ```
 
 ## Running
