@@ -1,0 +1,9 @@
+numpy
+scipy
+matplotlib
+black
+flake8
+pre-commit
+pytest
+coverage
+sphinx_rtd_theme
