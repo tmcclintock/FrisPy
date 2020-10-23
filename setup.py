@@ -1,11 +1,15 @@
-from setuptools import setup
+"""
+Setup file for the frispy package.
+"""
 
-dist = setup(name="FrisPy",
-             author="Tom McClintock",
-             author_email="thmsmcclintock@gmail.com",
-             version="2.0.0",
-             description="Simulated flying discs",
-             url="https://github.com/tmcclintock/FrisPy",
-             packages=['FrisPy'],
-             install_requires=['numpy','scipy']
+from distutils.core import setup
+
+setup(
+    name="FrisPy",
+    author="Tom McClintock",
+    author_email="thmsmcclintock@gmail.com",
+    version="1.0.0",  # TODO: check version from init file
+    description="Simulated flying discs",
+    url="https://github.com/tmcclintock/FrisPy",
+    packages=["frispy"],
 )
