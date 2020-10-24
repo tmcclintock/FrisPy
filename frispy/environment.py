@@ -2,6 +2,8 @@
 The ``Environment`` object.
 """
 
+import numpy as np
+
 
 class Environment(dict):
     """

@@ -4,7 +4,7 @@ for the disc trajectory.
 
 # import numpy as np
 
-from model import Model
+from frispy.model import Model
 
 
 class Trajectory:

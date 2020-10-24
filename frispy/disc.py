@@ -6,10 +6,8 @@ Physics are carried out elsewhere.
 
 import numpy as np
 
-from environment import Environment
-from trajectory import Trajectory
-
-# from .disc import * #not PEP8 compliant
+from frispy.environment import Environment
+from frispy.trajectory import Trajectory
 
 
 class Disc:
