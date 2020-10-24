@@ -2,11 +2,12 @@
 for the disc trajectory.
 """
 
-#import numpy as np
+# import numpy as np
 
-from .model import Model
+from model import Model
 
-class Trajectory():
+
+class Trajectory:
     """Trajectory of a disc object. This object contains the initial
     values, and computed values for the kinematic variables of
     the disc including the position, velocities, angles, and
@@ -28,21 +29,35 @@ class Trajectory():
         gammadot (float): gamma angular velocity; default is 50 rad/s
 
     """
-    def __init__(self, **kwargs):
-        allowed_keys = ['x', 'y', 'z', 'vx', 'vy', 'vz',
-                        'phi', 'theta', 'gamma',
-                        'phidot', 'thetadot', 'gammadot']
-        default_values = [0, 0, 1, 10, 0, 0,
-                          0, 0, 0, 0, 0, 50]
-        # initialize all allowed keys to defaults
-        self.__dict__.update((key, value) for key, value in
-                             zip(allowed_keys, default_values))
-        # and update the given keys by their given values
-        self.__dict__.update((key, value) for key, value in
-                             kwargs.items() if key in allowed_keys)
 
-        self.initial_values = {"initial_"+key: value for key, value in
-                               self.__dict__.items() if key in allowed_keys}
+    def __init__(self, **kwargs):
+        allowed_keys = [
+            "x",
+            "y",
+            "z",
+            "vx",
+            "vy",
+            "vz",
+            "phi",
+            "theta",
+            "gamma",
+            "phidot",
+            "thetadot",
+            "gammadot",
+        ]
+        default_values = [0, 0, 1, 10, 0, 0, 0, 0, 0, 0, 0, 50]
+        # initialize all allowed keys to defaults
+        self.__dict__.update((k, v) for k, v in zip(allowed_keys, default_values))
+        # and update the given keys by their given values
+        self.__dict__.update(
+            (k, v) for k, v in kwargs.items() if k in allowed_keys
+        )
+
+        self.initial_values = {
+            "initial_" + key: value
+            for key, value in self.__dict__.items()
+            if key in allowed_keys
+        }
 
         self._model = Model()
 

@@ -6,7 +6,7 @@ Physics are carried out elsewhere.
 
 import numpy as np
 
-from FrisPy.trajectory import Trajectory
+from trajectory import Trajectory
 
 # from .disc import * #not PEP8 compliant
 
