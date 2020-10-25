@@ -40,7 +40,7 @@ class Model:
             value (float): value of the coefficient
         """
         assert name in self.coefficients, f"invalid coefficient name {name}"
-        self.coefficients[name] = value
+        self._coefficients[name] = value
 
     def set_values(self, coefs: Dict[str, float] ) -> None:
         """
@@ -67,7 +67,7 @@ class Model:
         return self.coefficients[name]
 
     @property
-    def coeffcients(self) -> Dict[str, float]:
+    def coefficients(self) -> Dict[str, float]:
         return self._coefficients
 
     #####################################################################
@@ -134,8 +134,8 @@ class Model:
         """
         PTy0 = self.get_value("PTy0")
         PTywy = self.get_value("PTywy")
-        PTywa = self.get_value("PTywa")
-        return PTy0 + PTywy * wy + PTywa * alpha
+        PTya = self.get_value("PTya")
+        return PTy0 + PTywy * wy + PTya * alpha
     
     def C_z(self, wz: float) -> float:
         """

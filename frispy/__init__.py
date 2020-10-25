@@ -1,6 +1,6 @@
 from frispy.disc import Disc
 from frispy.environment import Environment
-from firspy.model import Model
+from frispy.model import Model
 from frispy.trajectory import Trajectory
 
 __author__ = "Tom McClintock thmsmcclintock@gmail.com"
