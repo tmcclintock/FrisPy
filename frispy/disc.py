@@ -7,6 +7,7 @@ Physics are carried out elsewhere.
 import numpy as np
 
 from frispy.environment import Environment
+from frispy.model import Model
 from frispy.trajectory import Trajectory
 
 
@@ -25,15 +26,15 @@ class Disc:
             air density, disc mass, etc. See the ``Environment``. Default is
     """
 
-    def __init__(self, environment=Environment()):
-        self.environment = environment
-
-        # Attach an uninitialized trajectory object
-        self.initialize_trajectory()
-
-    def initialize_trajectory(self, **kwargs):
-        """Set initial conditions for the trajectory."""
-        self._trajectory = Trajectory(**kwargs)
+    def __init__(
+            self,
+            environment=Environment(),
+            model=Model(),
+            trajectory=Trajectory(),
+    ):
+        self._environment = environment
+        self._model = model
+        self._trajectory = trajectory
 
     def compute_trajectory(self):
         """Call the differential equation solver to compute
@@ -42,14 +43,14 @@ class Disc:
         """
         pass
 
-    def set_model(self, **kwargs):
-        """Specify the physics model to be used to
-        compute the forces and torques.
-        """
-        self._trajectory.set_model(**kwargs)
+    @property
+    def environment(self) -> Environment:
+        return self._environment
 
-    def get_model(self):
-        """Return the physics model for the forces
-        and torques.
-        """
-        return self._trajectory.get_model()
+    @property
+    def model(self) -> Model:
+        return self._model
+
+    @property
+    def trajectory(self) -> Trajectory:
+        return self._trajectory
