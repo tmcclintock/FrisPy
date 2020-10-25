@@ -1,2 +1,0 @@
-#x y z vx vy vz phi theta gamma phidot thetadot gammadot
-0  0 1 10 0  0  0   0     0     0      0        50

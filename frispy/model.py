@@ -70,10 +70,10 @@ class Model:
     def coeffcients(self) -> Dict[str, float]:
         return self._coefficients
 
-    ####################################################################
-    # Below are functions connecting physical variables to force/torque#
-    # scaling factors (the `C`s)                                       #
-    ####################################################################
+    #####################################################################
+    # Below are functions connecting physical variables to force/torque #
+    # scaling factors (the `C`s)                                        #
+    #####################################################################
 
     def C_lift(self, alpha: float) -> float:
         """

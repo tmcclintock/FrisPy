@@ -53,9 +53,3 @@ class Disc:
         and torques.
         """
         return self._trajectory.get_model()
-
-
-if __name__ == "__main__":
-    d = Disc()
-    print(d)
-    print(dir(d))
