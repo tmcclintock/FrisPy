@@ -9,7 +9,6 @@ from frispy import Environment
 
 
 class TestEnvironment(TestCase):
-
     def test_smoke(self):
         e = Environment()
         assert e is not None

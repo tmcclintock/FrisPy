@@ -36,7 +36,7 @@ class TestModel(TestCase):
 
     def test_C_lift(self):
         alphas = np.linspace(-1, 1)
-        self.m.set_values({"PL0": 1, "PLa":1})
+        self.m.set_values({"PL0": 1, "PLa": 1})
         cl = self.m.C_lift(alphas)
         # Linear, strictly increasing
         for i in range(1, len(alphas)):
@@ -44,7 +44,7 @@ class TestModel(TestCase):
 
     def test_C_drag(self):
         alphas = np.linspace(-1, 1, 21)
-        self.m.set_values({"PD0": 1, "PDa":1, "alpha_0": 0})
+        self.m.set_values({"PD0": 1, "PDa": 1, "alpha_0": 0})
         cd = self.m.C_drag(alphas)
         # Quadratic, down then up
         for i in range(1, 11):
