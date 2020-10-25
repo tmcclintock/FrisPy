@@ -2,17 +2,22 @@
 for the disc trajectory.
 """
 
-# import numpy as np
+from numbers import Number
+from scipy.integrate import odeint
+from typing import Dict
+
+import numpy as np
 
 from frispy.model import Model
 
 
 class Trajectory:
-    """Trajectory of a disc object. This object contains the initial
-    values, and computed values for the kinematic variables of
-    the disc including the position, velocities, angles, and
-    angular velocities. Units are all given in `FrisPy.py` in
-    the documentation for the `Disc` object.
+    """
+    Class for computing the disc flight trajectory. Takes initial values
+    and interfaces with an ODE solver.
+
+    Units are meters [m] for length, kilograms [kg] for mass, seconds [s]
+    for time, and radians [rad] for angles.
 
     Args:
         x (float): horizontal position; default is 0 m
@@ -31,48 +36,46 @@ class Trajectory:
     """
 
     def __init__(self, **kwargs):
-        allowed_keys = [
-            "x",
-            "y",
-            "z",
-            "vx",
-            "vy",
-            "vz",
-            "phi",
-            "theta",
-            "gamma",
-            "phidot",
-            "thetadot",
-            "gammadot",
-        ]
-        default_values = [0, 0, 1, 10, 0, 0, 0, 0, 0, 0, 0, 50]
-        # initialize all allowed keys to defaults
-        self.__dict__.update((k, v) for k, v in zip(allowed_keys, default_values))
-        # and update the given keys by their given values
-        self.__dict__.update(
-            (k, v) for k, v in kwargs.items() if k in allowed_keys
-        )
-
-        self.initial_values = {
-            "initial_" + key: value
-            for key, value in self.__dict__.items()
-            if key in allowed_keys
+        # A default flight configuration
+        self._initial_conditions: Dict[str, float] = {
+            'x': 0,
+            'y': 0,
+            'z': 1,
+            'vx': 10,
+            'vy':0,
+            'vz':0,
+            "phi":0,
+            "theta":0,
+            "gamma":0,
+            "phidot":0,
+            "thetadot":0,
+            "gammadot":50,
         }
 
-        self._model = Model()
+        # set initial conditions
+        for k, v in kwargs.items():
+            assert k in self._initial_coordinates, f"invalid variable name {k}"
+            assert isinstance(v, Number), f"invalid type for {v}, {type(v)}"
+            self._initial_conditions[k] = v
 
-    def set_model(self, **kwargs):
-        """Update the values of parameters in the
-        coefficient model.
+    @property
+    def initial_conditions(self) -> Dict[str, float]:
+        return self._initial_conditions
 
-        Args:
-            kwargs (dict): key-value pairs of coefficients in the model
-
-        Returns:
-            None
+    @staticmethod
+    def rotation_matrix(phi: float, theta: float) -> np.ndarray:
         """
-        self._model.set_values(**kwargs)
+        Compute the (partial) rotation matrix that transforms from the
+        lab frame to the disc frame. Note that because of azimuthal
+        symmetry, the azimuthal angle (`gamma`) is not used.
+        """
+        sp = np.sin(phi)
+        cp = np.cos(phi)
+        st = np.sin(theta)
+        ct = np.cos(theta)
+        return np.array([
+            [ct, sp * st, -st * cp],
+            [0 , cp, sp],
+            [st, -sp * ct, cp * ct]
+        ])
 
-    def get_model(self):
-        """Return the model object."""
-        return self._model

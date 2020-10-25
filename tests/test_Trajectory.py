@@ -32,5 +32,43 @@ class TestTrajectory(TestCase):
                  "gammadot":50,
         }
         for k, v in truth.items():
-            assert getattr(t, k) == v
+            assert t.initial_conditions[k] == v
     
+    def test_rotation_matrix(self):
+        r = np.eye(3)  # identity -- no rotation
+        assert np.all(Trajectory.rotation_matrix(0, 0) == r)
+        # 90 degrees counter clockwise around the primary "x" axis
+        r = np.array([
+            [1, 0, 0],
+            [0, 0, 1],
+            [0, -1, 0]
+        ])
+        np.testing.assert_allclose(
+            Trajectory.rotation_matrix(np.pi / 2, 0),
+            r,
+            atol=1e-15
+        )
+        # 90 degrees CCW around the secondary "y" axis
+        r = np.array([
+            [0, 0, -1],
+            [0, 1, 0],
+            [1, 0, 0]
+        ])
+        np.testing.assert_allclose(
+            Trajectory.rotation_matrix(0, np.pi / 2),
+            r,
+            atol=1e-15
+        )
+        # 90 degrees CCW around the primary "x" axis then
+        # 90 degrees CCW around the secondary "y" axis
+        # This permutes the coordinates once
+        r = np.array([
+            [0, 1, 0],
+            [0, 0, 1],
+            [1, 0, 0]
+        ])
+        np.testing.assert_allclose(
+            Trajectory.rotation_matrix(np.pi / 2, np.pi / 2),
+            r,
+            atol=1e-15
+        )
