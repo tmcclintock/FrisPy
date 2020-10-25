@@ -51,16 +51,27 @@ class Trajectory:
             "thetadot":0,
             "gammadot":50,
         }
+        self._coord_order = ["x", "y", "z", "vx", "vy", "vz", "phi", "theta", "gamma", "phidot", "thetadot", "gammadot"]
 
-        # set initial conditions
+        # set arguments to initial conditions
         for k, v in kwargs.items():
-            assert k in self._initial_coordinates, f"invalid variable name {k}"
+            assert k in self._initial_coordinates, \
+                f"invalid initial condition name {k}"
             assert isinstance(v, Number), f"invalid type for {v}, {type(v)}"
-            self._initial_conditions[k] = v
+            self._initial_conditions[k] = v        
 
     @property
     def initial_conditions(self) -> Dict[str, float]:
         return self._initial_conditions
+
+    @property
+    def initial_conditions_array(self) -> np.ndarray:
+        return np.array([self.initial_conditions[k] for k in self._coord_order])
+
+    # @property
+    # def velocity(self) -> np.ndarray:
+    #     return np.array([
+    # ])
 
     @staticmethod
     def rotation_matrix(phi: float, theta: float) -> np.ndarray:

@@ -33,6 +33,8 @@ class TestTrajectory(TestCase):
         }
         for k, v in truth.items():
             assert t.initial_conditions[k] == v
+        truth_arr = np.array([truth[k] for k in t._coord_order])
+        np.testing.assert_equal(t.initial_conditions_array, truth_arr)
     
     def test_rotation_matrix(self):
         r = np.eye(3)  # identity -- no rotation
