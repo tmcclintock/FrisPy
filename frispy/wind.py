@@ -42,6 +42,10 @@ class NoWind(Wind):
 
 
 class ConstantWind(Wind):
+    """
+    The wind is uniform in position and constant in time.
+    """
+
     def __init__(
         self,
         vx: Optional[float] = None,
