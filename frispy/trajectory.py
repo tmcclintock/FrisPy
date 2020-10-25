@@ -51,14 +51,16 @@ class Trajectory:
             "thetadot":0,
             "gammadot":50,
         }
-        self._coord_order = ["x", "y", "z", "vx", "vy", "vz", "phi", "theta", "gamma", "phidot", "thetadot", "gammadot"]
+        self._coord_order = [
+            "x", "y", "z", "vx", "vy", "vz", "phi", "theta", "gamma", "phidot", "thetadot", "gammadot"
+        ]
 
         # set arguments to initial conditions
         for k, v in kwargs.items():
             assert k in self._initial_coordinates, \
                 f"invalid initial condition name {k}"
             assert isinstance(v, Number), f"invalid type for {v}, {type(v)}"
-            self._initial_conditions[k] = v        
+            self._initial_conditions[k] = v
 
     @property
     def initial_conditions(self) -> Dict[str, float]:
