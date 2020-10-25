@@ -3,12 +3,9 @@ for the disc trajectory.
 """
 
 from numbers import Number
-from scipy.integrate import odeint
 from typing import Dict
 
 import numpy as np
-
-from frispy.model import Model
 
 
 class Trajectory:
@@ -38,27 +35,39 @@ class Trajectory:
     def __init__(self, **kwargs):
         # A default flight configuration
         self._initial_conditions: Dict[str, float] = {
-            'x': 0,
-            'y': 0,
-            'z': 1,
-            'vx': 10,
-            'vy':0,
-            'vz':0,
-            "phi":0,
-            "theta":0,
-            "gamma":0,
-            "phidot":0,
-            "thetadot":0,
-            "gammadot":50,
+            "x": 0,
+            "y": 0,
+            "z": 1,
+            "vx": 10,
+            "vy": 0,
+            "vz": 0,
+            "phi": 0,
+            "theta": 0,
+            "gamma": 0,
+            "phidot": 0,
+            "thetadot": 0,
+            "gammadot": 50,
         }
         self._coord_order = [
-            "x", "y", "z", "vx", "vy", "vz", "phi", "theta", "gamma", "phidot", "thetadot", "gammadot"
+            "x",
+            "y",
+            "z",
+            "vx",
+            "vy",
+            "vz",
+            "phi",
+            "theta",
+            "gamma",
+            "phidot",
+            "thetadot",
+            "gammadot",
         ]
 
         # set arguments to initial conditions
         for k, v in kwargs.items():
-            assert k in self._initial_coordinates, \
-                f"invalid initial condition name {k}"
+            assert (
+                k in self._initial_coordinates
+            ), f"invalid initial condition name {k}"
             assert isinstance(v, Number), f"invalid type for {v}, {type(v)}"
             self._initial_conditions[k] = v
 
@@ -86,9 +95,6 @@ class Trajectory:
         cp = np.cos(phi)
         st = np.sin(theta)
         ct = np.cos(theta)
-        return np.array([
-            [ct, sp * st, -st * cp],
-            [0 , cp, sp],
-            [st, -sp * ct, cp * ct]
-        ])
-
+        return np.array(
+            [[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]]
+        )
