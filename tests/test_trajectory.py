@@ -55,3 +55,7 @@ class TestTrajectory(TestCase):
         np.testing.assert_allclose(
             Trajectory.rotation_matrix(np.pi / 2, np.pi / 2), r, atol=1e-15
         )
+
+    def test_velocity(self):
+        t = Trajectory()
+        np.testing.assert_equal(t.velocity, np.array([10.0, 0, 0]))

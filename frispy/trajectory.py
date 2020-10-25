@@ -1,4 +1,5 @@
-"""An object for holding an interface to the differential equation solver
+"""
+The ``Trajectory`` is the interface to the differential equation solver
 for the disc trajectory.
 """
 
@@ -71,6 +72,10 @@ class Trajectory:
             assert isinstance(v, Number), f"invalid type for {v}, {type(v)}"
             self._initial_conditions[k] = v
 
+        # Coordinate array
+        self._current_coordinates = self.initial_conditions_array.copy()
+        self._all_coordinates = self.initial_conditions_array.reshape(1, -1)
+
     @property
     def initial_conditions(self) -> Dict[str, float]:
         return self._initial_conditions
@@ -79,10 +84,12 @@ class Trajectory:
     def initial_conditions_array(self) -> np.ndarray:
         return np.array([self.initial_conditions[k] for k in self._coord_order])
 
-    # @property
-    # def velocity(self) -> np.ndarray:
-    #     return np.array([
-    # ])
+    @property
+    def velocity(self) -> np.ndarray:
+        """
+        Velocity vector [m/s].
+        """
+        return self._current_coordinates[3:6]
 
     @staticmethod
     def rotation_matrix(phi: float, theta: float) -> np.ndarray:
