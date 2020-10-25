@@ -76,6 +76,14 @@ class Trajectory:
         self._current_coordinates = self.initial_conditions_array.copy()
         self._all_coordinates = self.initial_conditions_array.reshape(1, -1)
 
+        # Compute current derived coordinates
+        # self.disc_unit_vectors_in_lab_frame = \
+        #    self.unit_vectors_in_lab_frame(
+        #        self._current_coordinates[6],
+        #        self._current_coordinates[7]
+        #        self.velocity,
+        #    )
+
     @property
     def initial_conditions(self) -> Dict[str, float]:
         return self._initial_conditions
@@ -83,6 +91,25 @@ class Trajectory:
     @property
     def initial_conditions_array(self) -> np.ndarray:
         return np.array([self.initial_conditions[k] for k in self._coord_order])
+
+    @property
+    def unit_vectors(self) -> np.ndarray:
+        """
+        Compute the unit vectors attached to the disc in a non-rotating
+        reference frame in terms of the lab frame. The 'x' and 'y' directions
+        are defined with respect to the velocity component in the plane of the
+        disc.
+        """
+        phi = self._current_coordinates[6]
+        theta = self._current_coordinates[6]
+        v = self.velocity
+        R = self.rotation_matrix(phi, theta)
+        zhat = R[2]
+        v_dot_zhat = v @ zhat
+        v_in_plane = v - zhat * v_dot_zhat
+        xhat = v_in_plane / np.linalg.norm(v_in_plane)
+        yhat = np.cross(zhat, xhat)
+        return np.array([xhat, yhat, zhat])
 
     @property
     def velocity(self) -> np.ndarray:
