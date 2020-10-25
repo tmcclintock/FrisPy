@@ -1,3 +1,6 @@
+# stuff I'm getting rid of
+DEP*
+
 #Ignore
 *.egg-info
 build
