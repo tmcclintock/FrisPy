@@ -13,18 +13,19 @@ class Model:
     parameters coupling the kinematic variables (spins and angles)
     to the force magnitudes.
     """
+
     def __init__(self, **kwargs):
         self._coefficients: Dict[str, float] = {
             "PL0": 0.33,
             "PLa": 1.9,
             "PD0": 0.18,
             "PDa": 0.69,
-            "PTxwx":0.43,
-            "PTxwz":-1.4e-2,
-            "PTy0":-8.2e-2,
-            "PTya":-1.2e-2,
-            "PTywy":-1.7e-3,
-            "PTzwz":-3.4e-5,
+            "PTxwx": 0.43,
+            "PTxwz": -1.4e-2,
+            "PTy0": -8.2e-2,
+            "PTya": -1.2e-2,
+            "PTywy": -1.7e-3,
+            "PTzwz": -3.4e-5,
             "alpha_0": 4 * np.pi / 180,
         }
         for k, v in kwargs.items():
@@ -42,7 +43,7 @@ class Model:
         assert name in self.coefficients, f"invalid coefficient name {name}"
         self._coefficients[name] = value
 
-    def set_values(self, coefs: Dict[str, float] ) -> None:
+    def set_values(self, coefs: Dict[str, float]) -> None:
         """
         Set the values of the coefficients.
 
@@ -136,7 +137,7 @@ class Model:
         PTywy = self.get_value("PTywy")
         PTya = self.get_value("PTya")
         return PTy0 + PTywy * wy + PTya * alpha
-    
+
     def C_z(self, wz: float) -> float:
         """
         'z'-torque scale factor. Linear in the 'z' angular velocity

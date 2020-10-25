@@ -4,8 +4,6 @@ Simulations of a flying disc. This file contains the disc object.
 Physics are carried out elsewhere.
 """
 
-import numpy as np
-
 from frispy.environment import Environment
 from frispy.model import Model
 from frispy.trajectory import Trajectory
@@ -27,10 +25,7 @@ class Disc:
     """
 
     def __init__(
-            self,
-            environment=Environment(),
-            model=Model(),
-            trajectory=Trajectory(),
+        self, environment=Environment(), model=Model(), trajectory=Trajectory(),
     ):
         self._environment = environment
         self._model = model
