@@ -4,9 +4,11 @@ for the disc trajectory.
 """
 
 from numbers import Number
-from typing import Dict
+from typing import Dict, Union, TypeVar
 
 import numpy as np
+
+Model = TypeVar("Model")
 
 
 class Trajectory:
@@ -76,14 +78,6 @@ class Trajectory:
         self._current_coordinates = self.initial_conditions_array.copy()
         self._all_coordinates = self.initial_conditions_array.reshape(1, -1)
 
-        # Compute current derived coordinates
-        # self.disc_unit_vectors_in_lab_frame = \
-        #    self.unit_vectors_in_lab_frame(
-        #        self._current_coordinates[6],
-        #        self._current_coordinates[7]
-        #        self.velocity,
-        #    )
-
     @property
     def initial_conditions(self) -> Dict[str, float]:
         return self._initial_conditions
@@ -93,30 +87,72 @@ class Trajectory:
         return np.array([self.initial_conditions[k] for k in self._coord_order])
 
     @property
-    def unit_vectors(self) -> np.ndarray:
-        """
-        Compute the unit vectors attached to the disc in a non-rotating
-        reference frame in terms of the lab frame. The 'x' and 'y' directions
-        are defined with respect to the velocity component in the plane of the
-        disc.
-        """
-        phi = self._current_coordinates[6]
-        theta = self._current_coordinates[6]
-        v = self.velocity
-        R = self.rotation_matrix(phi, theta)
-        zhat = R[2]
-        v_dot_zhat = v @ zhat
-        v_in_plane = v - zhat * v_dot_zhat
-        xhat = v_in_plane / np.linalg.norm(v_in_plane)
-        yhat = np.cross(zhat, xhat)
-        return np.array([xhat, yhat, zhat])
-
-    @property
     def velocity(self) -> np.ndarray:
         """
         Velocity vector [m/s].
         """
         return self._current_coordinates[3:6]
+
+    def calculate_intermediate_quantities(
+        self,
+        phi: float,
+        theta: float,
+        velocity: np.ndarray,
+        ang_velocity: np.ndarray,
+    ) -> Dict[str, Union[float, np.ndarray, dict]]:
+        """
+        Compute intermediate quantities on the way to computing the time
+        derivatives of the kinematic variables.
+        """
+        # Rotation matrix
+        R = self.rotation_matrix(phi, theta)
+        # Unit vectors
+        zhat = R[2]
+        v_dot_zhat = velocity @ zhat
+        v_in_plane = velocity - zhat * v_dot_zhat
+        xhat = v_in_plane / np.linalg.norm(v_in_plane)
+        yhat = np.cross(zhat, xhat)
+        # Angle of attack
+        angle_of_attack = -np.arctan(v_dot_zhat / np.linalg.norm(v_in_plane))
+        # Disc angular velocities
+        w_prime = np.ndarray(
+            [
+                ang_velocity[0] * np.cos(theta),
+                ang_velocity[1],
+                ang_velocity[0] * np.sin(theta) + ang_velocity[2],
+            ]
+        )
+        # Angular velocity in lab coordinates
+        w_lab = w_prime @ R
+        # Angular velocity components along the unit vectors in the lab frame
+        U = np.array([xhat, yhat, zhat])
+        w = U @ w_lab
+        return {
+            "unit_vectors": {"xhat": xhat, "y_hat": yhat, "zhat": zhat},
+            "angle_of_attack": angle_of_attack,
+            "rotation_matrix": R,
+            "w_prime": w_prime,
+            "w_lab": w_lab,
+            "w": w,
+        }
+
+    def compute_forces(
+        self, model: Model, rho: float, velocity: np.ndarray, yhat: np.ndarray,
+    ) -> np.ndarray:
+        pass
+
+    def compute_torques(
+        self,
+        angle_of_attack: float,
+        angular_velocity: np.ndarray,
+        area: float,
+        diameter: float,
+        model: Model,
+        R: np.ndarray,
+        rho: float,
+        velocity: np.ndarray,
+    ) -> np.ndarray:
+        pass
 
     @staticmethod
     def rotation_matrix(phi: float, theta: float) -> np.ndarray:
