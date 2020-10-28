@@ -69,3 +69,10 @@ class TestTrajectory(TestCase):
         w = np.array([0, 0, 1])
         res = t.calculate_intermediate_quantities(phi, theta, v, w)
         npt.assert_equal(res["w"], w)
+        npt.assert_equal(res["w_prime"], w)
+        npt.assert_equal(res["w_lab"], w)
+        npt.assert_equal(res["rotation_matrix"], np.eye(3))
+        assert res["angle_of_attack"] == 0
+        npt.assert_equal(res["unit_vectors"]["xhat"], np.array([1, 0, 0]))
+        npt.assert_equal(res["unit_vectors"]["yhat"], np.array([0, 1, 0]))
+        npt.assert_equal(res["unit_vectors"]["zhat"], np.array([0, 0, 1]))

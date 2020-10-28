@@ -128,7 +128,7 @@ class Trajectory:
         U = np.array([xhat, yhat, zhat])
         w = U @ w_lab
         return {
-            "unit_vectors": {"xhat": xhat, "y_hat": yhat, "zhat": zhat},
+            "unit_vectors": {"xhat": xhat, "yhat": yhat, "zhat": zhat},
             "angle_of_attack": angle_of_attack,
             "rotation_matrix": R,
             "w_prime": w_prime,
