@@ -3,6 +3,7 @@ Tests of the ``Trajectory`` class.
 """
 
 import numpy as np
+import numpy.testing as npt
 
 from unittest import TestCase
 
@@ -33,29 +34,38 @@ class TestTrajectory(TestCase):
         for k, v in truth.items():
             assert t.initial_conditions[k] == v
         truth_arr = np.array([truth[k] for k in t._coord_order])
-        np.testing.assert_equal(t.initial_conditions_array, truth_arr)
+        npt.assert_equal(t.initial_conditions_array, truth_arr)
 
     def test_rotation_matrix(self):
         r = np.eye(3)  # identity -- no rotation
         assert np.all(Trajectory.rotation_matrix(0, 0) == r)
         # 90 degrees counter clockwise around the primary "x" axis
         r = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
-        np.testing.assert_allclose(
+        npt.assert_allclose(
             Trajectory.rotation_matrix(np.pi / 2, 0), r, atol=1e-15
         )
         # 90 degrees CCW around the secondary "y" axis
         r = np.array([[0, 0, -1], [0, 1, 0], [1, 0, 0]])
-        np.testing.assert_allclose(
+        npt.assert_allclose(
             Trajectory.rotation_matrix(0, np.pi / 2), r, atol=1e-15
         )
         # 90 degrees CCW around the primary "x" axis then
         # 90 degrees CCW around the secondary "y" axis
         # This permutes the coordinates once
         r = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
-        np.testing.assert_allclose(
+        npt.assert_allclose(
             Trajectory.rotation_matrix(np.pi / 2, np.pi / 2), r, atol=1e-15
         )
 
     def test_velocity(self):
         t = Trajectory()
-        np.testing.assert_equal(t.velocity, np.array([10.0, 0, 0]))
+        npt.assert_equal(t.velocity, np.array([10.0, 0, 0]))
+
+    def test_calculate_intermediate_quantities_case1(self):
+        t = Trajectory()
+        phi = 0
+        theta = 0
+        v = np.array([1, 0, 0])
+        w = np.array([0, 0, 1])
+        res = t.calculate_intermediate_quantities(phi, theta, v, w)
+        npt.assert_equal(res["w"], w)

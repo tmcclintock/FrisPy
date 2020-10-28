@@ -115,7 +115,7 @@ class Trajectory:
         # Angle of attack
         angle_of_attack = -np.arctan(v_dot_zhat / np.linalg.norm(v_in_plane))
         # Disc angular velocities
-        w_prime = np.ndarray(
+        w_prime = np.array(
             [
                 ang_velocity[0] * np.cos(theta),
                 ang_velocity[1],
