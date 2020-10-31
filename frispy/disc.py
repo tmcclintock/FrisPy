@@ -4,6 +4,7 @@ Simulations of a flying disc. This file contains the disc object.
 Physics are carried out elsewhere.
 """
 
+from frispy.equations_of_motion import EOM
 from frispy.environment import Environment
 from frispy.model import Model
 from frispy.trajectory import Trajectory
@@ -24,12 +25,8 @@ class Disc:
             air density, disc mass, etc. See the ``Environment``. Default is
     """
 
-    def __init__(
-        self, environment=Environment(), model=Model(), trajectory=Trajectory(),
-    ):
-        self._environment = environment
-        self._model = model
-        self._trajectory = trajectory
+    def __init__(self, eom=EOM()):
+        self._eom = eom
 
     def compute_trajectory(self):
         """Call the differential equation solver to compute
@@ -39,13 +36,17 @@ class Disc:
         pass
 
     @property
+    def eom(self) -> EOM:
+        return self._eom
+
+    @property
     def environment(self) -> Environment:
-        return self._environment
+        return self._eom.environment
 
     @property
     def model(self) -> Model:
-        return self._model
+        return self._eom.model
 
     @property
     def trajectory(self) -> Trajectory:
-        return self._trajectory
+        return self._eom.trajectory

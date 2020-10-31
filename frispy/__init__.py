@@ -1,5 +1,6 @@
 from frispy.disc import Disc
 from frispy.environment import Environment
+from frispy.equations_of_motion import EOM
 from frispy.model import Model
 from frispy.trajectory import Trajectory
 

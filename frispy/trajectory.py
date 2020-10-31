@@ -4,11 +4,9 @@ for the disc trajectory.
 """
 
 from numbers import Number
-from typing import Dict, Union, TypeVar
+from typing import Dict, Union
 
 import numpy as np
-
-Model = TypeVar("Model")
 
 
 class Trajectory:
@@ -99,10 +97,13 @@ class Trajectory:
         theta: float,
         velocity: np.ndarray,
         ang_velocity: np.ndarray,
-    ) -> Dict[str, Union[float, np.ndarray, dict]]:
+    ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
         """
         Compute intermediate quantities on the way to computing the time
         derivatives of the kinematic variables.
+
+        Args:
+        TODO
         """
         # Rotation matrix
         R = self.rotation_matrix(phi, theta)
@@ -135,24 +136,6 @@ class Trajectory:
             "w_lab": w_lab,
             "w": w,
         }
-
-    def compute_forces(
-        self, model: Model, rho: float, velocity: np.ndarray, yhat: np.ndarray,
-    ) -> np.ndarray:
-        pass
-
-    def compute_torques(
-        self,
-        angle_of_attack: float,
-        angular_velocity: np.ndarray,
-        area: float,
-        diameter: float,
-        model: Model,
-        R: np.ndarray,
-        rho: float,
-        velocity: np.ndarray,
-    ) -> np.ndarray:
-        pass
 
     @staticmethod
     def rotation_matrix(phi: float, theta: float) -> np.ndarray:
