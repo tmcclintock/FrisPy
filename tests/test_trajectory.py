@@ -76,3 +76,58 @@ class TestTrajectory(TestCase):
         npt.assert_equal(res["unit_vectors"]["xhat"], np.array([1, 0, 0]))
         npt.assert_equal(res["unit_vectors"]["yhat"], np.array([0, 1, 0]))
         npt.assert_equal(res["unit_vectors"]["zhat"], np.array([0, 0, 1]))
+
+    def test_calculate_intermediate_quantities_case2(self):
+        t = Trajectory()
+        phi = 0
+        theta = 0
+        v = np.array([1 / np.sqrt(2), 1 / np.sqrt(2), 0])
+        w = np.array([0, 0, 1])
+        res = t.calculate_intermediate_quantities(phi, theta, v, w)
+        npt.assert_equal(res["w"], w)
+        npt.assert_equal(res["w_prime"], w)
+        npt.assert_equal(res["w_lab"], w)
+        npt.assert_equal(res["rotation_matrix"], np.eye(3))
+        assert res["angle_of_attack"] == 0
+        npt.assert_almost_equal(
+            res["unit_vectors"]["xhat"],
+            np.array([1 / np.sqrt(2), 1 / np.sqrt(2), 0]),
+        )
+        npt.assert_almost_equal(
+            res["unit_vectors"]["yhat"],
+            np.array([-1 / np.sqrt(2), 1 / np.sqrt(2), 0]),
+        )
+        npt.assert_equal(res["unit_vectors"]["zhat"], np.array([0, 0, 1]))
+
+    def test_calculate_intermediate_quantities_case3(self):
+        t = Trajectory()
+        phi = 0
+        theta = np.pi / 4  # 45 degrees
+        v = np.array([1, 0, 0])
+        w = np.array([0, 0, 1])
+        res = t.calculate_intermediate_quantities(phi, theta, v, w)
+        npt.assert_almost_equal(res["w"], w)
+        npt.assert_equal(res["w_prime"], w)
+        npt.assert_almost_equal(
+            res["w_lab"], np.array([1 / np.sqrt(2), 0, 1 / np.sqrt(2)])
+        )
+        npt.assert_almost_equal(
+            res["rotation_matrix"],
+            np.array(
+                [
+                    [1 / np.sqrt(2), 0, -1 / np.sqrt(2)],
+                    [0, 1, 0],
+                    [1 / np.sqrt(2), 0, 1 / np.sqrt(2)],
+                ]
+            ),
+        )
+        assert res["angle_of_attack"] == -np.pi / 4
+        npt.assert_almost_equal(
+            res["unit_vectors"]["xhat"],
+            np.array([1 / np.sqrt(2), 0, -1 / np.sqrt(2)]),
+        )
+        npt.assert_equal(res["unit_vectors"]["yhat"], np.array([0, 1, 0]))
+        npt.assert_almost_equal(
+            res["unit_vectors"]["zhat"],
+            np.array([1 / np.sqrt(2), 0, 1 / np.sqrt(2)]),
+        )  # use almost to get around -0 == 0
