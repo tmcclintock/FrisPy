@@ -1,8 +1,13 @@
+# stuff I'm getting rid of
+DEP*
+
 #Ignore
 *.egg-info
 build
 dist
 *.ipynb_checkpoints
+
+.mypy*
 
 # Compiled C
 *.o

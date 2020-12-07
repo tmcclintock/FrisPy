@@ -1,1 +1,1 @@
-This directory contains some notebooks showing various ways to visualize disc trajectories.
+This is out of date. The notebook here will not work (Dec. 6 2020 - TM).
