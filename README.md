@@ -78,10 +78,11 @@ times = result.times
 x, y, z = result.x, result.y, result.z
 ```
 Once you have a trajectory, you can use that to create visualizations. For
-instance, to plot the height of the disc as a function of time, you can run:
+instance, to plot the height of the disc against one of its horizontal
+coordintes (`x`), you can run:
 ```python
 import matplotlib.pyplot as plt
 
-plt.plot(times, z)
+plt.plot(x, z)
 plt.show()
 ```

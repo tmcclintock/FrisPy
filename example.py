@@ -6,5 +6,5 @@ result = disc.compute_trajectory()
 times = result.times
 x, y, z = result.x, result.y, result.z
 
-plt.plot(times, z)
+plt.plot(x, z)
 plt.show()
