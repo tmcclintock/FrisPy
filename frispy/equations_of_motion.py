@@ -130,6 +130,11 @@ class EOM:
         <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp>`_
         for more information about its `fun` argument.
 
+        .. todo::
+
+           Implement the disc hitting the ground as a (Callable) scipy
+           event object.
+
         Args:
           time (float): instantanious time of the system
           coordinates (np.ndarray): kinematic variables of the disc
@@ -138,6 +143,10 @@ class EOM:
           derivatives of all coordinates
         """
         x, y, z, vx, vy, vz, phi, theta, gamma, dphi, dtheta, dgamma = coordinates
+        # If the disk hit the ground, then stop calculations
+        if z <= 0:
+            return coordinates * 0
+
         velocity = np.array([vx, vy, vz])
         ang_velocity = np.array([dphi, dtheta, dgamma])
         result = self.compute_forces(phi, theta, velocity, ang_velocity)
@@ -158,7 +167,4 @@ class EOM:
                 result["T"][2],  # gamma component of ang. acc.
             ]
         )
-        # If the disk hit the ground, then zero the changes
-        if z <= 0:
-            derivatives *= 0
         return derivatives
