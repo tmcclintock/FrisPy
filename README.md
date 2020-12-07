@@ -26,7 +26,7 @@ git https://github.com/tmcclintock/FrisPy.git
 or with the GitHub Desktop application. Once you have the code, change
 into the directory and proceed.
 
-Note, the only hard requirements for this package are `python>=3.5`,
+Note, the only hard requirements for this package are `python>=3.6`,
 `numpy`, `scipy`, and `matplotlib` (plotting only). Note that this package
 uses the relatively recent
 [`scipy.integrate.solve_ivp`](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp)
