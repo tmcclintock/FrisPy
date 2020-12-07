@@ -73,8 +73,8 @@ In words, you create a disc and compute its trajectory.
 from frispy import Disc
 
 disc = Disc()
-results = disc.compute_trajectory()
-times = result.t
+result = disc.compute_trajectory()
+times = result.times
 x, y, z = result.x, result.y, result.z
 ```
 Once you have a trajectory, you can use that to create visualizations. For
