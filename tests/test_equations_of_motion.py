@@ -70,6 +70,6 @@ class TestEOM(TestCase):
     def test_compute_derivatives_smoke(self):
         eom = EOM()
         coords = [0, 0, 1, 10, 0, 0, 0, 0, 0, 0, 0, 62]
-        der = eom.compute_derivatives(coords)
+        der = eom.compute_derivatives(0, coords)
         assert der.shape == (12,)
         assert der.dtype == np.float

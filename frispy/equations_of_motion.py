@@ -1,8 +1,3 @@
-"""
-The ``EOM`` (or "equations of motion)" object is used to actually run the
-ODE solver.
-"""
-
 from typing import Dict, Union
 
 import numpy as np
@@ -126,7 +121,22 @@ class EOM:
         res["T"] = res["T_x"] + res["T_y"] + res["T_z"]
         return res
 
-    def compute_derivatives(self, coordinates: np.ndarray):
+    def compute_derivatives(
+        self, time: float, coordinates: np.ndarray
+    ) -> np.ndarray:
+        """
+        Right hand side of the ordinary differential equations. This is
+        supplied to :meth:`scipy.integrate.solve_ivp`. See `this page
+        <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp>`_
+        for more information about its `fun` argument.
+
+        Args:
+          time (float): instantanious time of the system
+          coordinates (np.ndarray): kinematic variables of the disc
+
+        Returns:
+          derivatives of all coordinates
+        """
         x, y, z, vx, vy, vz, phi, theta, gamma, dphi, dtheta, dgamma = coordinates
         velocity = np.array([vx, vy, vz])
         ang_velocity = np.array([dphi, dtheta, dgamma])
