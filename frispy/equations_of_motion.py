@@ -96,7 +96,7 @@ class EOM:
         TODO
         """
         aoa = res["angle_of_attack"]
-        torque_amplitude = (
+        res["torque_amplitude"] = (
             0.5
             * self.environment["air_density"]
             * (velocity @ velocity)
@@ -108,16 +108,18 @@ class EOM:
         # in the lab frame
         res["T_x_lab"] = (
             self.model.C_x(wx, wz)
-            * torque_amplitude
+            * res["torque_amplitude"]
             * res["unit_vectors"]["xhat"]
         )
         res["T_y_lab"] = (
             self.model.C_y(aoa, wy)
-            * torque_amplitude
+            * res["torque_amplitude"]
             * res["unit_vectors"]["yhat"]
         )
         # Computed in the disc frame
-        res["T_z"] = self.model.C_z(wz) * torque_amplitude * np.array([0, 0, 1])
+        res["T_z"] = (
+            self.model.C_z(wz) * res["torque_amplitude"] * np.array([0, 0, 1])
+        )
         # Rotate into the disc frame
         res["T_x"] = res["rotation_matrix"] @ res["T_x_lab"]
         res["T_y"] = res["rotation_matrix"] @ res["T_y_lab"]
@@ -130,7 +132,7 @@ class EOM:
         ang_velocity = np.array([dphi, dtheta, dgamma])
         result = self.compute_forces(phi, theta, velocity, ang_velocity)
         result = self.compute_torques(velocity, ang_velocity, result)
-        rate_of_changes = np.array(
+        derivatives = np.array(
             [
                 vx,
                 vy,
@@ -148,5 +150,5 @@ class EOM:
         )
         # If the disk hit the ground, then zero the changes
         if z <= 0:
-            rate_of_changes *= 0
-        return rate_of_changes
+            derivatives *= 0
+        return derivatives
