@@ -1,5 +1,4 @@
 import pytest
-import numpy.testing as npt
 
 from unittest import TestCase
 
@@ -56,24 +55,21 @@ class TestDisc(TestCase):
         d = Disc()
         assert d.initial_conditions == self.ics
         assert d.current_coordinates == self.ics
-        assert d.current_trajectory is None
-        assert d.current_trajectory_time_points is None
+        assert d.current_results is None
         ics = self.ics.copy()
         ics["x"] = 1.0
         assert ics != self.ics
         d = Disc(initial_conditions=ics)
         assert d.initial_conditions == ics
         assert d.current_coordinates == ics
-        assert d.current_trajectory is None
-        assert d.current_trajectory_time_points is None
+        assert d.current_results is None
 
     def test_reset_initial_conditions(self):
         d = Disc()
         d.current_trajectory = "blah"
         d.current_trajectory_time_points = "lol"
         d.reset_initial_conditions()
-        assert d.current_trajectory is None
-        assert d.current_trajectory_time_points is None
+        assert d.current_results is None
 
     def test_set_default_initial_conditions(self):
         d = Disc()
@@ -94,31 +90,37 @@ class TestDisc(TestCase):
 
     def test_compute_trajectory_basics(self):
         d = Disc()
-        t, traj = d.compute_trajectory()
-        assert len(traj) == len(d.initial_conditions_as_ordered_list)
-        assert len(t) == len(traj[0])
+        result = d.compute_trajectory()
+        for x in d.ordered_coordinate_names:
+            assert len(result.times) == len(getattr(result, x))
 
     def test_compute_trajectory_repeatable(self):
         d = Disc()
-        t, traj = d.compute_trajectory()
-        assert len(traj) == len(d.initial_conditions_as_ordered_list)
-        assert len(t) == len(traj[0])
-        t2, traj2 = d.compute_trajectory()
-        assert all(t == t2)
-        npt.assert_array_equal(traj, traj2)
+        result = d.compute_trajectory()
+        for x in d.ordered_coordinate_names:
+            assert len(result.times) == len(getattr(result, x))
+        result2 = d.compute_trajectory()
+        assert all(result.times == result2.times)
+        for x in d.ordered_coordinate_names:
+            assert len(getattr(result, x)) == len(getattr(result2, x))
 
     def test_compute_trajectory_return_results(self):
         d = Disc()
-        t, traj = d.compute_trajectory()
-        t2, traj2, results = d.compute_trajectory(return_full_results=True)
-        assert all(t == t2)
-        npt.assert_array_equal(traj, traj2)
-        assert "status" in results
-        assert results.status >= 0  # -1 is failure
+        result = d.compute_trajectory()
+        result2, scipy_results = d.compute_trajectory(return_scipy_results=True)
+        for x in d.ordered_coordinate_names:
+            assert len(result.times) == len(getattr(result, x))
+        result2 = d.compute_trajectory()
+        assert all(result.times == result2.times)
+        for x in d.ordered_coordinate_names:
+            assert len(getattr(result, x)) == len(getattr(result2, x))
+        assert "status" in scipy_results
+        assert scipy_results.status >= 0  # -1 is failure
 
     def test_compute_trajectory_t_span_vs_flight_time(self):
         d = Disc()
-        t, traj = d.compute_trajectory(flight_time=3)
-        t2, traj2 = d.compute_trajectory(t_span=(0, 3), flight_time=None)
-        assert all(t == t2)
-        npt.assert_array_equal(traj, traj2)
+        result = d.compute_trajectory(flight_time=3)
+        result2 = d.compute_trajectory(t_span=(0, 3), flight_time=None)
+        assert all(result.times == result2.times)
+        for x in d.ordered_coordinate_names:
+            assert len(getattr(result, x)) == len(getattr(result2, x))

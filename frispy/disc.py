@@ -1,6 +1,5 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 
-import numpy as np
 from scipy.integrate import solve_ivp
 
 from frispy.equations_of_motion import EOM
@@ -43,9 +42,9 @@ class Disc:
     def compute_trajectory(
         self,
         flight_time: float = 3.0,
-        return_full_results: bool = False,
+        return_scipy_results: bool = False,
         **solver_kwargs,
-    ) -> Tuple[np.ndarray, np.ndarray]:
+    ):
         """Call the differential equation solver to compute
         the trajectory. The kinematic variables and timesteps are saved
         as the `current_trajectory` attribute, which is a dictionary,
@@ -53,6 +52,10 @@ class Disc:
 
         See `these scipy docs <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp>`_
         for more information on the solver.
+
+        .. todo::
+
+           Type this correctly.
 
         .. warning::
 
@@ -62,7 +65,7 @@ class Disc:
         Args:
           flight_time (float, optional): time in seconds that the simulation
             will run over. Default is 3 seconds.
-          return_full_results (bool, optional): Default is `False`. Flag to
+          return_scipy_results (bool, optional): Default is `False`. Flag to
             indicate whether to return the full results object of the solver.
             See the scipy docs for more information.
           solver_args (Dict[str, Any]): extra arguments to pass
@@ -83,18 +86,24 @@ class Disc:
             y0=self.initial_conditions_as_ordered_list,
             **solver_kwargs,
         )
-        (self.current_trajectory_time_points, self.current_trajectory) = (
-            result.t,
-            result.y,
-        )
-        if return_full_results:
-            return (
-                self.current_trajectory_time_points,
-                self.current_trajectory,
-                result,
-            )
+        if solver_kwargs.get("dense_output", False):
+            return result
 
-        return (self.current_trajectory_time_points, self.current_trajectory)
+        # Set the current coordinates to the last point
+        self.current_coordinates = result.y[:, -1]
+
+        # Create the results object
+        fpr = FrisPyResults
+        fpr.times = result.t
+        for i, key in enumerate(self.ordered_coordinate_names):
+            setattr(fpr, key, result.y[i])
+        self.current_results = fpr
+
+        # If specified, return a results object
+        if return_scipy_results:
+            return fpr, result
+        else:
+            return fpr
 
     def reset_initial_conditions(self) -> None:
         """
@@ -103,8 +112,7 @@ class Disc:
         """
         self.initial_conditions = self.default_initial_conditions
         self.current_coordinates = self.initial_conditions.copy()
-        self.current_trajectory_time_points = None
-        self.current_trajectory = None
+        self.current_results = None
         return
 
     def set_default_initial_conditions(
@@ -173,3 +181,25 @@ class Disc:
     @property
     def trajectory_object(self) -> Trajectory:
         return self._eom.trajectory
+
+
+class FrisPyResults:
+    """
+    An object to hold the results of computing a trajectory
+    """
+
+    __slots__ = [
+        "x",
+        "y",
+        "z",
+        "vx",
+        "vy",
+        "vz",
+        "phi",
+        "theta",
+        "gamma",
+        "dphi",
+        "dtheta",
+        "dgamma",
+        "times",
+    ]
