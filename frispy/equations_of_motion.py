@@ -21,7 +21,10 @@ class EOM:
     """
 
     def __init__(
-        self, environment: Environment(), model: Model(), trajectory: Trajectory()
+        self,
+        environment: Environment = Environment(),
+        model: Model = Model(),
+        trajectory: Trajectory = Trajectory(),
     ):
         self._environment = environment
         self._model = model
@@ -76,6 +79,8 @@ class EOM:
             * self.environment["g"]
             * self.environment["grav_vector"]
         )
+        res["F_total"] = res["F_lift"] + res["F_drag"] + res["F_grav"]
+        res["Acc"] = res["F_total"] / self.environment["mass"]
         return res
 
     def compute_torques(
@@ -118,3 +123,30 @@ class EOM:
         res["T_y"] = res["rotation_matrix"] @ res["T_y_lab"]
         res["T"] = res["T_x"] + res["T_y"] + res["T_z"]
         return res
+
+    def compute_derivatives(self, coordinates: np.ndarray):
+        x, y, z, vx, vy, vz, phi, theta, gamma, dphi, dtheta, dgamma = coordinates
+        velocity = np.array([vx, vy, vz])
+        ang_velocity = np.array([dphi, dtheta, dgamma])
+        result = self.compute_forces(phi, theta, velocity, ang_velocity)
+        result = self.compute_torques(velocity, ang_velocity, result)
+        rate_of_changes = np.array(
+            [
+                vx,
+                vy,
+                vz,
+                result["Acc"][0],  # x component of acceleration
+                result["Acc"][1],  # y component of acceleration
+                result["Acc"][2],  # z component of acceleration
+                dphi,
+                dtheta,
+                dgamma,
+                result["T"][0],  # phi component of ang. acc.
+                result["T"][1],  # theta component of ang. acc.
+                result["T"][2],  # gamma component of ang. acc.
+            ]
+        )
+        # If the disk hit the ground, then zero the changes
+        if z <= 0:
+            rate_of_changes *= 0
+        return rate_of_changes
