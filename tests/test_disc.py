@@ -1,6 +1,3 @@
-"""
-Tests of the ``Disc`` class.
-"""
 import pytest
 
 from unittest import TestCase
