@@ -86,3 +86,13 @@ import matplotlib.pyplot as plt
 plt.plot(x, z)
 plt.show()
 ```
+
+## Soon
+
+This rebuild is a work in progress. Check back soon for:
+
+- animated trajectories
+- documentation
+- travis builds
+- example Jupyter notebooks
+- plotting routines
