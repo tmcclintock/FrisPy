@@ -32,10 +32,12 @@ class Disc:
 
     def __init__(
         self,
-        eom: EOM = EOM(),
+        model: Optional[Model] = None,
+        eom: Optional[EOM] = None,
         initial_conditions: Optional[Dict[str, float]] = None,
     ):
-        self._eom = eom
+        self._model = model or Model()
+        self._eom = EOM(model=self._model)
         self.set_default_initial_conditions(initial_conditions)
         self.reset_initial_conditions()
 
@@ -176,7 +178,8 @@ class Disc:
 
     @property
     def model(self) -> Model:
-        return self._eom.model
+        print(self._model)
+        return self._model
 
     @property
     def trajectory_object(self) -> Trajectory:
