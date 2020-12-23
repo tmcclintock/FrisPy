@@ -39,7 +39,7 @@ the command line:
 
 .. code-block:: bash
 
-   git https://github.com/tmcclintock/FrisPy.git
+   git clone https://github.com/tmcclintock/FrisPy.git
 
 or with the GitHub Desktop application. Once you have the code, change
 into the directory and proceed.
@@ -64,7 +64,7 @@ You can install all the requirements into a compatible environment called
 
 .. code-block:: bash
 
-   conda create env -f environment.yml
+   conda env create -f environment.yml
 
 You can then install the package the usual way
 
