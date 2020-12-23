@@ -10,7 +10,7 @@
 FrisPy
 ======
 
-Documentation for ``FrisPy`` can be found `here
+Documentation for ``FrisPy`` package can be `found here on RTD
 <https://frispy.readthedocs.io/en/latest/>`_.
 
 This repository contains a physical model for a flying disc. Using this code,
