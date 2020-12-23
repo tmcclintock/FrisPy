@@ -1,6 +1,6 @@
 name: fpdev
 dependencies:
-  - python>=3.5
+  - python>=3.6
   - twine
   - numpy
   - scipy

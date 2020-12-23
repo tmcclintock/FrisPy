@@ -1,6 +1,6 @@
 name: frispy
 dependencies:
-  - python>=3.5
+  - python>=3.6
   - numpy
   - scipy
   - matplotlib
