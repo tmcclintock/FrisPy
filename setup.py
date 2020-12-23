@@ -5,7 +5,7 @@ from setuptools import setup
 
 import frispy  # noqa: E402
 
-with open("README.rst", "r") as fh:
+with open("README.rst", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
