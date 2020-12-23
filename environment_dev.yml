@@ -5,6 +5,7 @@ dependencies:
   - numpy
   - scipy
   - matplotlib
+  - isort
   - black
   - flake8
   - pre-commit

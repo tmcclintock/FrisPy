@@ -2,10 +2,10 @@
 Tests of the ``Trajectory`` class.
 """
 
+from unittest import TestCase
+
 import numpy as np
 import numpy.testing as npt
-
-from unittest import TestCase
 
 from frispy import Trajectory
 

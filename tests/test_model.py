@@ -2,10 +2,10 @@
 Tests of the ``Model`` object.
 """
 
+from unittest import TestCase
+
 import numpy as np
 import pytest
-
-from unittest import TestCase
 
 from frispy import Model
 

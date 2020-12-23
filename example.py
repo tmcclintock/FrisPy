@@ -1,5 +1,6 @@
-from frispy import Disc
 import matplotlib.pyplot as plt
+
+from frispy import Disc
 
 disc = Disc()
 result = disc.compute_trajectory()
