@@ -1,4 +1,4 @@
-.. |TRAVIS| image:: https://travis-ci.com/tmcclintock/FrisPy.svg?branch=v2
+.. |TRAVIS| image:: https://travis-ci.com/tmcclintock/FrisPy.svg?branch=master
 	    :target: https://travis-ci.com/tmcclintock/FrisPy
 .. |COVERALLS| image:: https://coveralls.io/repos/github/tmcclintock/FrisPy/badge.svg?branch=master
 	       :target: https://coveralls.io/github/tmcclintock/FrisPy?branch=master
