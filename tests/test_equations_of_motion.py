@@ -54,7 +54,7 @@ class TestEOM(TestCase):
     def test_F_total_Acc_relation(self):
         eom = EOM()
         result = eom.compute_forces(self.phi, self.theta, self.vel, self.ang_vel)
-        assert all(result["F_total"] == result["Acc"] * eom.environment["mass"])
+        assert all(result["F_total"] == result["Acc"] * eom.environment.mass)
 
     def test_compute_torques_smoke(self):
         eom = EOM()
