@@ -10,6 +10,9 @@
 FrisPy
 ======
 
+Documentation for ``FrisPy`` can be found `here
+<https://frispy.readthedocs.io/en/latest/>`_.
+
 This repository contains a physical model for a flying disc. Using this code,
 one can simulate trajectories of discs with varying initial conditions, while
 also changing the underlying physical modlel. This is useful for analyzing
