@@ -15,7 +15,7 @@ setup(
     version=frispy.__version__,
     description=frispy.__docs__,
     long_description=long_description,
-    long_description_content_type="text/reStructuredText",
+    long_description_content_type="text/x-rst",
     url="https://github.com/tmcclintock/FrisPy",
     packages=["frispy"],
     classifiers=[
