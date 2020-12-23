@@ -5,7 +5,7 @@ from setuptools import setup
 
 import frispy  # noqa: E402
 
-with open("README.md", "r") as fh:
+with open("README.rst", "r") as fh:
     long_description = fh.read()
 
 setup(
@@ -15,7 +15,6 @@ setup(
     version=frispy.__version__,
     description=frispy.__docs__,
     long_description=long_description,
-    long_description_content_type="text/markdown",
     url="https://github.com/tmcclintock/FrisPy",
     packages=["frispy"],
     classifiers=[
