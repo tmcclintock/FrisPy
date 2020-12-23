@@ -14,9 +14,13 @@ repository.
 
 ## Installation
 
-There are a few options for installing this package. Once a PyPI version is
-cut, these instructions will be updated.
+The easiest way to install this package is with ``pip``:
 
+```bash
+pip install frispy
+```
+
+To install from source, there are other steps involved.
 First, you must obtain the code from Github. If you have
 [`git`](https://git-scm.com/) installed you can clone the repository from
 the command line:
