@@ -1,6 +1,7 @@
-name: frispy_dev
+name: fpdev
 dependencies:
   - python>=3.5
+  - twine
   - numpy
   - scipy
   - matplotlib
@@ -10,3 +11,4 @@ dependencies:
   - pytest
   - coverage
   - sphinx_rtd_theme
+  - sphinx-autoapi
