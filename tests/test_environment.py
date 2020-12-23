@@ -25,5 +25,5 @@ class TestEnvironment(TestCase):
             "mass": 0.175,
         }
         for k, v in d.items():
-            np.testing.assert_equal(e[k], v)
-        assert (e["diameter"] / 2) ** 2 * np.pi == e["area"]
+            np.testing.assert_equal(getattr(e, k), v, k)
+        assert (e.diameter / 2) ** 2 * np.pi == e.area
