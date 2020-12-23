@@ -2,8 +2,8 @@ from typing import Dict, List, Optional
 
 from scipy.integrate import solve_ivp
 
-from frispy.equations_of_motion import EOM
 from frispy.environment import Environment
+from frispy.equations_of_motion import EOM
 from frispy.model import Model
 from frispy.trajectory import Trajectory
 

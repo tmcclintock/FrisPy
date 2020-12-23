@@ -3,9 +3,8 @@ The ``Wind`` class handles the wind, which is a real-valued time-dependent
 vector field that influences the flight of the disc.
 """
 
-from typing import List, Optional, Union
-
 from abc import ABC, abstractmethod
+from typing import List, Optional, Union
 
 import numpy as np
 

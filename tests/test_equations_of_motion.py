@@ -1,6 +1,6 @@
-import numpy as np
-
 from unittest import TestCase
+
+import numpy as np
 
 from frispy import EOM
 
