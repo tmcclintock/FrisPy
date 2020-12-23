@@ -1,4 +1,4 @@
-# FrisPy [![Build Status](https://travis-ci.com/tmcclintock/FrisPy.svg?branch=v2)](https://travis-ci.com/tmcclintock/FrisPy)
+# FrisPy [![Build Status](https://travis-ci.com/tmcclintock/FrisPy.svg?branch=v2)](https://travis-ci.com/tmcclintock/FrisPy) [![Coverage Status](https://coveralls.io/repos/github/tmcclintock/FrisPy/badge.svg?branch=master)](https://coveralls.io/github/tmcclintock/FrisPy?branch=master) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 This repository contains a physical model for a flying disc. Using this code,
 one can simulate trajectories of discs with varying initial conditions, while
