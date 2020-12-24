@@ -1,8 +1,9 @@
-from frispy.disc import Disc
-from frispy.environment import Environment
-from frispy.equations_of_motion import EOM
-from frispy.model import Model
-from frispy.trajectory import Trajectory
+from .disc import Disc
+from .environment import Environment
+from .equations_of_motion import EOM
+from .model import Model
+from .trajectory import Trajectory
 
 __author__ = "Tom McClintock thmsmcclintock@gmail.com"
-__version__ = "1.0.0"
+__version__ = "1.0.4"
+__docs__ = "Simulates flying spinning discs."

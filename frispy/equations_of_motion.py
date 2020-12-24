@@ -57,9 +57,9 @@ class EOM:
         vhat = velocity / np.linalg.norm(velocity)
         force_amplitude = (
             0.5
-            * self.environment["air_density"]
+            * self.environment.air_density
             * (velocity @ velocity)
-            * self.environment["mass"]
+            * self.environment.area
         )
         # Compute the lift and drag forces
         res["F_lift"] = (
@@ -70,12 +70,12 @@ class EOM:
         res["F_drag"] = self.model.C_drag(aoa) * force_amplitude * (-vhat)
         # Compute gravitational force
         res["F_grav"] = (
-            self.environment["mass"]
-            * self.environment["g"]
-            * self.environment["grav_vector"]
+            self.environment.mass
+            * self.environment.g
+            * self.environment.grav_vector
         )
         res["F_total"] = res["F_lift"] + res["F_drag"] + res["F_grav"]
-        res["Acc"] = res["F_total"] / self.environment["mass"]
+        res["Acc"] = res["F_total"] / self.environment.mass
         return res
 
     def compute_torques(
@@ -93,10 +93,10 @@ class EOM:
         aoa = res["angle_of_attack"]
         res["torque_amplitude"] = (
             0.5
-            * self.environment["air_density"]
+            * self.environment.air_density
             * (velocity @ velocity)
-            * self.environment["diameter"]
-            * self.environment["area"]
+            * self.environment.diameter
+            * self.environment.area
         )
         wx, wy, wz = res["w"]
         # Compute component torques. Note that "x" and "y" are computed
