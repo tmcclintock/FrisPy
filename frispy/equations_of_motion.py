@@ -59,7 +59,7 @@ class EOM:
             0.5
             * self.environment.air_density
             * (velocity @ velocity)
-            * self.environment.mass
+            * self.environment.area
         )
         # Compute the lift and drag forces
         res["F_lift"] = (
