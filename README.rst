@@ -1,5 +1,5 @@
-.. |TRAVIS| image:: https://travis-ci.com/tmcclintock/FrisPy.svg?branch=master
-	    :target: https://travis-ci.com/tmcclintock/FrisPy
+.. |TRAVIS| image:: https://github.com/tmcclintock/FrisPy/workflows/Build%20Status/badge.svg?branch=master
+	    :target: https://github.com/tmcclintock/FrisPy/actions
 .. |COVERALLS| image:: https://coveralls.io/repos/github/tmcclintock/FrisPy/badge.svg?branch=master
 	       :target: https://coveralls.io/github/tmcclintock/FrisPy?branch=master
 .. |LICENSE| image:: https://img.shields.io/badge/License-MIT-yellow.svg
