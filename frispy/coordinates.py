@@ -43,19 +43,19 @@ class Coordinates:
     dgamma: float
 
     def __init__(
-            self,
-            x: float,
-            y: float,
-            z: float,
-            vx: float,
-            vy: float,
-            vz: float,
-            phi: float,
-            theta: float,
-            gamma: float,
-            dphi: float,
-            dtheta: float,
-            dgamma: float
+        self,
+        x: float,
+        y: float,
+        z: float,
+        vx: float,
+        vy: float,
+        vz: float,
+        phi: float,
+        theta: float,
+        gamma: float,
+        dphi: float,
+        dtheta: float,
+        dgamma: float,
     ):
         self.x = x
         self.y = y
@@ -100,7 +100,7 @@ class Coordinates:
     def cos_theta(self):
         return self._cos_theta
 
-    @phi.setter
+    @theta.setter
     def theta(self, value):
         self._sin_theta = np.sin(value)
         self._cos_theta = np.cos(value)
