@@ -18,12 +18,16 @@ class Coordinates:
         "vx",
         "vy",
         "vz",
-        "phi",
-        "theta",
+        "_phi",
+        "_theta",
         "gamma",
         "dphi",
         "dtheta",
         "dgamma",
+        "_sin_phi",
+        "_cos_phi",
+        "_sin_theta",
+        "_cos_theta",
     ]
     x: float
     y: float
@@ -31,12 +35,76 @@ class Coordinates:
     vx: float
     vy: float
     vz: float
-    phi: float
-    theta: float
+    _phi: float
+    _theta: float
     gamma: float
     dphi: float
     dtheta: float
     dgamma: float
+
+    def __init__(
+            self,
+            x: float,
+            y: float,
+            z: float,
+            vx: float,
+            vy: float,
+            vz: float,
+            phi: float,
+            theta: float,
+            gamma: float,
+            dphi: float,
+            dtheta: float,
+            dgamma: float
+    ):
+        self.x = x
+        self.y = y
+        self.z = z
+        self.vx = vx
+        self.vy = vy
+        self.vz = vz
+        self.phi = phi
+        self.theta = theta
+        self.gamma = gamma
+        self.dphi = dphi
+        self.dtheta = dtheta
+        self.dgamma = dgamma
+
+    @property
+    def phi(self):
+        return self._phi
+
+    @property
+    def sin_phi(self):
+        return self._sin_phi
+
+    @property
+    def cos_phi(self):
+        return self._cos_phi
+
+    @phi.setter
+    def phi(self, value):
+        self._sin_phi = np.sin(value)
+        self._cos_phi = np.cos(value)
+        self._phi = value
+
+    @property
+    def theta(self):
+        return self._theta
+
+    @property
+    def sin_theta(self):
+        return self._sin_theta
+
+    @property
+    def cos_theta(self):
+        return self._cos_theta
+
+    @phi.setter
+    def theta(self, value):
+        self._sin_theta = np.sin(value)
+        self._cos_theta = np.cos(value)
+        self._theta = value
 
     @property
     def position(self) -> np.ndarray:
@@ -61,8 +129,8 @@ class Coordinates:
         lab frame to the disc frame. Note that because of azimuthal
         symmetry, the azimuthal angle (`gamma`) is not used.
         """
-        sp = np.sin(self.phi)
-        cp = np.cos(self.phi)
-        st = np.sin(self.theta)
-        ct = np.cos(self.theta)
+        sp = self.sin_phi
+        cp = self.cos_phi
+        st = self.sin_theta
+        ct = self.cos_theta
         return np.array([[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]])

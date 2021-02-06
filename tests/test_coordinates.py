@@ -32,6 +32,24 @@ class TestCoordinates(TestCase):
         co = self.get_coordinates()
         assert co is not None
 
+    def test_phi_setter(self):
+        co = self.get_coordinates()
+        co.phi = 0
+        npt.assert_almost_equal(co.sin_phi, 0)
+        npt.assert_almost_equal(co.cos_phi, 1)
+        co.phi = np.pi / 2
+        npt.assert_almost_equal(co.sin_phi, 1)
+        npt.assert_almost_equal(co.cos_phi, 0)
+
+    def test_theta_setter(self):
+        co = self.get_coordinates()
+        co.theta = 0
+        npt.assert_almost_equal(co.sin_theta, 0)
+        npt.assert_almost_equal(co.cos_theta, 1)
+        co.theta = np.pi / 2
+        npt.assert_almost_equal(co.sin_theta, 1)
+        npt.assert_almost_equal(co.cos_theta, 0)
+
     def test_position(self):
         co = self.get_coordinates()
         assert all(co.position == np.array([co.x, co.y, co.z]))
