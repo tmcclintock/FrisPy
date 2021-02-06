@@ -11,7 +11,6 @@ from frispy import Coordinates
 
 
 class TestCoordinates(TestCase):
-
     def get_coordinates(self):
         coords = {
             "x": 0,
@@ -55,9 +54,7 @@ class TestCoordinates(TestCase):
         # 90 degrees counter clockwise around the primary "x" axis
         co.phi = np.pi / 2
         r = np.array([[1, 0, 0], [0, 0, 1], [0, -1, 0]])
-        npt.assert_allclose(
-            co.rotation_matrix, r, atol=1e-15
-        )
+        npt.assert_allclose(co.rotation_matrix, r, atol=1e-15)
 
     def test_rotation_matrix_0_pi2(self):
         co = self.get_coordinates()
@@ -65,9 +62,7 @@ class TestCoordinates(TestCase):
         r = np.array([[0, 0, -1], [0, 1, 0], [1, 0, 0]])
         co.phi = 0
         co.theta = np.pi / 2
-        npt.assert_allclose(
-            co.rotation_matrix, r, atol=1e-15
-        )
+        npt.assert_allclose(co.rotation_matrix, r, atol=1e-15)
 
     def test_rotation_matrix_pi2_pi2(self):
         co = self.get_coordinates()
@@ -76,6 +71,4 @@ class TestCoordinates(TestCase):
         # This permutes the coordinates once
         r = np.array([[0, 1, 0], [0, 0, 1], [1, 0, 0]])
         co.phi = co.theta = np.pi / 2
-        npt.assert_allclose(
-            co.rotation_matrix, r, atol=1e-15
-        )
+        npt.assert_allclose(co.rotation_matrix, r, atol=1e-15)

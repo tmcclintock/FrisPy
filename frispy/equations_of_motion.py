@@ -70,9 +70,7 @@ class EOM:
         res["F_drag"] = self.model.C_drag(aoa) * force_amplitude * (-vhat)
         # Compute gravitational force
         res["F_grav"] = (
-            self.environment.mass
-            * self.environment.g
-            * self.environment.grav_vector
+            self.environment.mass * self.environment.g * self.environment.grav_vector
         )
         res["F_total"] = res["F_lift"] + res["F_drag"] + res["F_grav"]
         res["Acc"] = res["F_total"] / self.environment.mass
@@ -112,18 +110,14 @@ class EOM:
             * res["unit_vectors"]["yhat"]
         )
         # Computed in the disc frame
-        res["T_z"] = (
-            self.model.C_z(wz) * res["torque_amplitude"] * np.array([0, 0, 1])
-        )
+        res["T_z"] = self.model.C_z(wz) * res["torque_amplitude"] * np.array([0, 0, 1])
         # Rotate into the disc frame
         res["T_x"] = res["rotation_matrix"] @ res["T_x_lab"]
         res["T_y"] = res["rotation_matrix"] @ res["T_y_lab"]
         res["T"] = res["T_x"] + res["T_y"] + res["T_z"]
         return res
 
-    def compute_derivatives(
-        self, time: float, coordinates: np.ndarray
-    ) -> np.ndarray:
+    def compute_derivatives(self, time: float, coordinates: np.ndarray) -> np.ndarray:
         """
         Right hand side of the ordinary differential equations. This is
         supplied to :meth:`scipy.integrate.solve_ivp`. See `this page

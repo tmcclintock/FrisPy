@@ -11,7 +11,20 @@ import numpy as np
 
 @dataclass
 class Coordinates:
-    __slots__ = ["x", "y", "z", "vx", "vy", "vz", "phi", "theta", "gamma", "dphi", "dtheta", "dgamma"]
+    __slots__ = [
+        "x",
+        "y",
+        "z",
+        "vx",
+        "vy",
+        "vz",
+        "phi",
+        "theta",
+        "gamma",
+        "dphi",
+        "dtheta",
+        "dgamma",
+    ]
     x: float
     y: float
     z: float
@@ -52,6 +65,4 @@ class Coordinates:
         cp = np.cos(self.phi)
         st = np.sin(self.theta)
         ct = np.cos(self.theta)
-        return np.array(
-            [[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]]
-        )
+        return np.array([[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]])

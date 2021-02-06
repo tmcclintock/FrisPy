@@ -66,9 +66,7 @@ class Trajectory:
 
         # set arguments to initial conditions
         for k, v in kwargs.items():
-            assert (
-                k in self._initial_coordinates
-            ), f"invalid initial condition name {k}"
+            assert k in self._initial_coordinates, f"invalid initial condition name {k}"
             assert isinstance(v, Number), f"invalid type for {v}, {type(v)}"
             self._initial_conditions[k] = v
 
@@ -148,6 +146,4 @@ class Trajectory:
         cp = np.cos(phi)
         st = np.sin(theta)
         ct = np.cos(theta)
-        return np.array(
-            [[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]]
-        )
+        return np.array([[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]])

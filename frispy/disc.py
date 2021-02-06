@@ -136,9 +136,7 @@ class Disc:
         }
         for i in base_ICs:
             if initial_conditions is not None:
-                assert (
-                    i in initial_conditions
-                ), f"{i} missing from initial conditions"
+                assert i in initial_conditions, f"{i} missing from initial conditions"
         self._default_initial_conditions = initial_conditions or base_ICs
 
     @property
@@ -164,9 +162,7 @@ class Disc:
 
     @property
     def initial_conditions_as_ordered_list(self) -> List:
-        return [
-            self.initial_conditions[key] for key in self.ordered_coordinate_names
-        ]
+        return [self.initial_conditions[key] for key in self.ordered_coordinate_names]
 
     @property
     def environment(self) -> Environment:
