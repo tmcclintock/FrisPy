@@ -20,8 +20,8 @@ class Environment:
         g (float): default is 9.81 m/s^2; gravitational acceleration on Earth
         grav_vector (Optional[numpy.ndarray]): default is [0,0,-1] if left as
             ``None``; is a unit vector.
-        I_zz (float): default is 0.001219 kg*m^2; z-axis moment of inertia
-        I_xx (float): default is 0.175 kg*m^2; x and y-axis moments of inertia
+        I_zz (float): default is 0.002352 kg*m^2; z-axis moment of inertia
+        I_xx (float): default is 0.001219 kg*m^2; x and y-axis moments of inertia
             (i.e. is the same as I_yy and the cross components I_xy)
         mass (float): defualt is 0.175 kg
     """
@@ -29,7 +29,7 @@ class Environment:
     def __init__(
         self,
         air_density: float = 1.225,
-        area: float = 0.57,
+        area: float = 0.057,
         g: float = 9.81,
         grav_vector: Optional[np.ndarray] = None,
         I_zz: float = 0.002352,
