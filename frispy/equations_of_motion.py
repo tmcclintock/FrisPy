@@ -72,7 +72,7 @@ class EOM:
         res["F_grav"] = (
             self.environment.mass
             * self.environment.g
-            * self.environment.grav_vector
+            * self.environment.grav_unit_vector
         )
         res["F_total"] = res["F_lift"] + res["F_drag"] + res["F_grav"]
         res["Acc"] = res["F_total"] / self.environment.mass
