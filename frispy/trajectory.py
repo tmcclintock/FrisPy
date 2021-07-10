@@ -9,6 +9,18 @@ from typing import Dict, Union
 import numpy as np
 
 
+def rotation_matrix(phi: float, theta: float) -> np.ndarray:
+    """
+    Compute the (partial) rotation matrix that transforms from the
+    lab frame to the disc frame. Note that because of azimuthal
+    symmetry, the azimuthal angle (`gamma`) is not used.
+    """
+    sp, cp, st, ct = (np.sin(phi), np.cos(phi), np.sin(theta), np.cos(theta))
+    return np.array(
+        [[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]]
+    )
+
+
 class Trajectory:
     """
     Class for computing the disc flight trajectory. Takes initial values
@@ -106,7 +118,7 @@ class Trajectory:
         TODO
         """
         # Rotation matrix
-        R = self.rotation_matrix(phi, theta)
+        R = rotation_matrix(phi, theta)
         # Unit vectors
         zhat = R[2]
         v_dot_zhat = velocity @ zhat
@@ -136,18 +148,3 @@ class Trajectory:
             "w_lab": w_lab,
             "w": w,
         }
-
-    @staticmethod
-    def rotation_matrix(phi: float, theta: float) -> np.ndarray:
-        """
-        Compute the (partial) rotation matrix that transforms from the
-        lab frame to the disc frame. Note that because of azimuthal
-        symmetry, the azimuthal angle (`gamma`) is not used.
-        """
-        sp = np.sin(phi)
-        cp = np.cos(phi)
-        st = np.sin(theta)
-        ct = np.cos(theta)
-        return np.array(
-            [[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]]
-        )
