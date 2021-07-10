@@ -3,6 +3,7 @@ The ``Trajectory`` is the interface to the differential equation solver
 for the disc trajectory.
 """
 
+from dataclasses import dataclass
 from numbers import Number
 from typing import Dict, Union
 
@@ -21,6 +22,7 @@ def rotation_matrix(phi: float, theta: float) -> np.ndarray:
     )
 
 
+@dataclass
 class Trajectory:
     """
     Class for computing the disc flight trajectory. Takes initial values
@@ -45,82 +47,73 @@ class Trajectory:
 
     """
 
-    def __init__(self, **kwargs):
-        # A default flight configuration
+    x: float = 0
+    y: float = 0
+    z: float = 1
+    vx: float = 10
+    vy: float = 0
+    vz: float = 0
+    phi: float = 0
+    theta: float = 0
+    gamma: float = 0
+    phidot: float = 0
+    thetadot: float = 0
+    gammadot: float = 50
+
+    def __post_init__(self):
         self._initial_conditions: Dict[str, float] = {
-            "x": 0,
-            "y": 0,
-            "z": 1,
-            "vx": 10,
-            "vy": 0,
-            "vz": 0,
-            "phi": 0,
-            "theta": 0,
-            "gamma": 0,
-            "phidot": 0,
-            "thetadot": 0,
-            "gammadot": 50,
+            coord: getattr(self, coord)
+            for coord in [
+                "x",
+                "y",
+                "z",
+                "vx",
+                "vy",
+                "vz",
+                "phi",
+                "theta",
+                "gamma",
+                "phidot",
+                "thetadot",
+                "gammadot",
+            ]
         }
-        self._coord_order = [
-            "x",
-            "y",
-            "z",
-            "vx",
-            "vy",
-            "vz",
-            "phi",
-            "theta",
-            "gamma",
-            "phidot",
-            "thetadot",
-            "gammadot",
-        ]
 
-        # set arguments to initial conditions
-        for k, v in kwargs.items():
-            assert (
-                k in self._initial_coordinates
-            ), f"invalid initial condition name {k}"
-            assert isinstance(v, Number), f"invalid type for {v}, {type(v)}"
-            self._initial_conditions[k] = v
-
-        # Coordinate array
-        self._current_coordinates = self.initial_conditions_array.copy()
-        self._all_coordinates = self.initial_conditions_array.reshape(1, -1)
-
-    @property
-    def initial_conditions(self) -> Dict[str, float]:
-        return self._initial_conditions
-
-    @property
-    def initial_conditions_array(self) -> np.ndarray:
-        return np.array([self.initial_conditions[k] for k in self._coord_order])
+    def reset(self) -> None:
+        for k, v in self._initial_conditions.items():
+            setattr(self, k, v)
+        return
 
     @property
     def velocity(self) -> np.ndarray:
-        """
-        Velocity vector [m/s].
-        """
-        return self._current_coordinates[3:6]
+        return np.array([self.vx, self.vy, self.vz])
 
-    def calculate_intermediate_quantities(
+    @velocity.setter
+    def velocity(self, v: np.ndarray) -> None:
+        self.vx, self.vy, self.vz = v
+        return
+
+    @property
+    def angular_velocity(self) -> np.ndarray:
+        return np.array([self.phidot, self.thetadot, self.gammadot])
+
+    @angular_velocity.setter
+    def angular_velocity(self, v: np.ndarray) -> None:
+        self.phidot, self.thetadot, self.gammadot = v
+        return
+
+    def derived_quantities(
         self,
-        phi: float,
-        theta: float,
-        velocity: np.ndarray,
-        ang_velocity: np.ndarray,
     ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
         """
         Compute intermediate quantities on the way to computing the time
         derivatives of the kinematic variables.
-
-        Args:
-        TODO
         """
         # Rotation matrix
-        R = rotation_matrix(phi, theta)
+        R = rotation_matrix(self.phi, self.theta)
         # Unit vectors
         zhat = R[2]
+        velocity = self.velocity
         v_dot_zhat = velocity @ zhat
         v_in_plane = velocity - zhat * v_dot_zhat
         xhat = v_in_plane / np.linalg.norm(v_in_plane)
@@ -128,11 +121,12 @@ class Trajectory:
         # Angle of attack
         angle_of_attack = -np.arctan(v_dot_zhat / np.linalg.norm(v_in_plane))
         # Disc angular velocities
+        angular_velocity = self.angular_velocity
         w_prime = np.array(
             [
-                ang_velocity[0] * np.cos(theta),
-                ang_velocity[1],
-                ang_velocity[0] * np.sin(theta) + ang_velocity[2],
+                angular_velocity[0] * np.cos(self.theta),
+                angular_velocity[1],
+                angular_velocity[0] * np.sin(self.theta) + angular_velocity[2],
             ]
         )
         # Angular velocity in lab coordinates

@@ -32,9 +32,7 @@ class TestTrajectory(TestCase):
             "gammadot": 50,
         }
         for k, v in truth.items():
-            assert t.initial_conditions[k] == v
-        truth_arr = np.array([truth[k] for k in t._coord_order])
-        npt.assert_equal(t.initial_conditions_array, truth_arr)
+            assert t._initial_conditions[k] == v
 
     def test_rotation_matrix(self):
         r = np.eye(3)  # identity -- no rotation
@@ -54,14 +52,23 @@ class TestTrajectory(TestCase):
     def test_velocity(self):
         t = Trajectory()
         npt.assert_equal(t.velocity, np.array([10.0, 0, 0]))
+        t.velocity = np.array([1, 2, 3])
+        npt.assert_equal(t.velocity, np.array([1, 2, 3]))
 
-    def test_calculate_intermediate_quantities_case1(self):
+    def test_angular_velocity(self):
         t = Trajectory()
-        phi = 0
-        theta = 0
-        v = np.array([1, 0, 0])
+        npt.assert_equal(t.angular_velocity, np.array([0, 0, 50]))
+        t.angular_velocity = np.array([1, 2, 3])
+        npt.assert_equal(t.angular_velocity, np.array([1, 2, 3]))
+
+    def test_derived_quantities_case1(self):
+        t = Trajectory()
         w = np.array([0, 0, 1])
-        res = t.calculate_intermediate_quantities(phi, theta, v, w)
+        t.phi = 0
+        t.theta = 0
+        t.velocity = np.array([1, 0, 0])
+        t.angular_velocity = w
+        res = t.derived_quantities()
         npt.assert_equal(res["w"], w)
         npt.assert_equal(res["w_prime"], w)
         npt.assert_equal(res["w_lab"], w)
@@ -73,11 +80,13 @@ class TestTrajectory(TestCase):
 
     def test_calculate_intermediate_quantities_case2(self):
         t = Trajectory()
-        phi = 0
-        theta = 0
+        t.phi = 0
+        t.theta = 0
         v = np.array([1 / np.sqrt(2), 1 / np.sqrt(2), 0])
         w = np.array([0, 0, 1])
-        res = t.calculate_intermediate_quantities(phi, theta, v, w)
+        t.velocity = v
+        t.angular_velocity = w
+        res = t.derived_quantities()
         npt.assert_equal(res["w"], w)
         npt.assert_equal(res["w_prime"], w)
         npt.assert_equal(res["w_lab"], w)
@@ -95,11 +104,13 @@ class TestTrajectory(TestCase):
 
     def test_calculate_intermediate_quantities_case3(self):
         t = Trajectory()
-        phi = 0
-        theta = np.pi / 4  # 45 degrees
+        t.phi = 0
+        t.theta = np.pi / 4  # 45 degrees
         v = np.array([1, 0, 0])
         w = np.array([0, 0, 1])
-        res = t.calculate_intermediate_quantities(phi, theta, v, w)
+        t.velocity = v
+        t.angular_velocity = w
+        res = t.derived_quantities()
         npt.assert_almost_equal(res["w"], w)
         npt.assert_equal(res["w_prime"], w)
         npt.assert_almost_equal(

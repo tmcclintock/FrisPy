@@ -50,9 +50,11 @@ class EOM:
         Args:
         TODO
         """
-        res = self.trajectory.calculate_intermediate_quantities(
-            phi, theta, velocity, ang_velocity
-        )
+        self.trajectory.phi = phi
+        self.trajectory.theta = theta
+        self.trajectory.velocity = velocity
+        self.trajectory.angular_velocity = ang_velocity
+        res = self.trajectory.derived_quantities()
         aoa = res["angle_of_attack"]
         vhat = velocity / np.linalg.norm(velocity)
         force_amplitude = (
