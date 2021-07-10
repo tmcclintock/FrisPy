@@ -19,7 +19,7 @@ class TestEnvironment(TestCase):
             "air_density": 1.225,
             "area": 0.57,
             "g": 9.81,
-            "grav_vector": np.array([0.0, 0.0, -1.0]),
+            "grav_unit_vector": np.array([0.0, 0.0, -1.0]),
             "I_zz": 0.002352,
             "I_xx": 0.001219,
             "mass": 0.175,
