@@ -3,7 +3,6 @@ Physical model for the forces and torques on a disc.
 """
 
 from dataclasses import dataclass
-from typing import Dict
 
 import numpy as np
 
