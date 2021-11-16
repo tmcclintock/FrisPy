@@ -25,6 +25,10 @@ modeling code, either roll back to an old version or check out the
 `Frisbee_Simulator <https://github.com/tmcclintock/Frisbee_Simulator>`_
 repository.
 
+The earliest implementation of this model that I could find was by Sara Ann Hummel
+for their 2003 Masters thesis for UC Davis.  You can find the document in full
+`here <https://morleyfielddgc.files.wordpress.com/2009/04/hummelthesis.pdf>`_.
+
 Installation
 ------------
 
