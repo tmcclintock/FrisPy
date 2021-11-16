@@ -1,3 +1,5 @@
+from collections import OrderedDict
+from numbers import Number
 from typing import Dict, List, Optional
 
 from scipy.integrate import solve_ivp
@@ -31,21 +33,18 @@ class Disc:
     """
 
     def __init__(
-        self,
-        model: Optional[Model] = None,
-        eom: Optional[EOM] = None,
-        initial_conditions: Optional[Dict[str, float]] = None,
+        self, model: Model = Model(), eom: Optional[EOM] = None, **kwargs
     ):
-        self._model = model or Model()
-        self._eom = EOM(model=self._model)
-        self.set_default_initial_conditions(initial_conditions)
+        self.model = model
+        self.eom = eom or EOM(model=self.model)
+        self.set_default_initial_conditions(**kwargs)
         self.reset_initial_conditions()
 
     def compute_trajectory(
         self,
         flight_time: float = 3.0,
         return_scipy_results: bool = False,
-        **solver_kwargs,
+        **kwargs,
     ):
         """Call the differential equation solver to compute
         the trajectory. The kinematic variables and timesteps are saved
@@ -74,11 +73,11 @@ class Disc:
             to the :meth:`scipy.integrate.solver_ivp` method used to solve
             the differential equation.
         """
-        if "t_span" in solver_kwargs:
+        if "t_span" in kwargs:
             assert (
                 flight_time is None
             ), "cannot have t_span in solver_kwargs if flight_time is not None"
-            t_span = solver_kwargs.pop("t_span")
+            t_span = kwargs.pop("t_span")
         else:
             t_span = (0, flight_time)
 
@@ -86,20 +85,17 @@ class Disc:
             fun=self.eom.compute_derivatives,
             t_span=t_span,
             y0=self.initial_conditions_as_ordered_list,
-            **solver_kwargs,
+            **kwargs,
         )
-        if solver_kwargs.get("dense_output", False):
+        if kwargs.get("dense_output", False):
             return result
 
         # Set the current coordinates to the last point
         self.current_coordinates = result.y[:, -1]
 
         # Create the results object
-        fpr = FrisPyResults
-        fpr.times = result.t
-        for i, key in enumerate(self.ordered_coordinate_names):
-            setattr(fpr, key, result.y[i])
-        self.current_results = fpr
+        fpr = {key: result.y[key] for key in self.initial_conditions.keys()}
+        fpr["times"] = result.t
 
         # If specified, return a results object
         if return_scipy_results:
@@ -113,96 +109,43 @@ class Disc:
         clear the trajectory.
         """
         self.initial_conditions = self.default_initial_conditions
-        self.current_coordinates = self.initial_conditions.copy()
-        self.current_results = None
         return
 
-    def set_default_initial_conditions(
-        self, initial_conditions: Optional[Dict[str, float]]
-    ) -> None:
-        base_ICs = {
-            "x": 0,
-            "y": 0,
-            "z": 1.0,
-            "vx": 10.0,
-            "vy": 0,
-            "vz": 0,
-            "phi": 0,
-            "theta": 0,
-            "gamma": 0,
-            "dphi": 0,
-            "dtheta": 0,
-            "dgamma": 62.0,
-        }
-        for i in base_ICs:
-            if initial_conditions is not None:
-                assert (
-                    i in initial_conditions
-                ), f"{i} missing from initial conditions"
-        self._default_initial_conditions = initial_conditions or base_ICs
+    def set_default_initial_conditions(self, **kwargs) -> None:
+        initial_conditions = OrderedDict(
+            {
+                "x": 0,
+                "y": 0,
+                "z": 1.0,
+                "vx": 10.0,
+                "vy": 0,
+                "vz": 0,
+                "phi": 0,
+                "theta": 0,
+                "gamma": 0,
+                "dphi": 0,
+                "dtheta": 0,
+                "dgamma": 62.0,
+            }
+        )
+        assert set(kwargs.keys()).issubset(set(initial_conditions.keys()))
+        for key, value in kwargs.items():
+            initial_conditions[key] = value
+        self.default_initial_conditions = initial_conditions
+        return
 
     @property
-    def ordered_coordinate_names(self) -> List[str]:
-        return [
-            "x",
-            "y",
-            "z",
-            "vx",
-            "vy",
-            "vz",
-            "phi",
-            "theta",
-            "gamma",
-            "dphi",
-            "dtheta",
-            "dgamma",
-        ]
+    def initial_conditions_names(self) -> List[str]:
+        return list(self.initial_conditions.keys())
 
     @property
-    def default_initial_conditions(self) -> Dict[str, float]:
-        return self._default_initial_conditions
-
-    @property
-    def initial_conditions_as_ordered_list(self) -> List:
-        return [
-            self.initial_conditions[key] for key in self.ordered_coordinate_names
-        ]
+    def list_initial_conditions(self) -> List[Number]:
+        return list(self.initial_conditions.values())
 
     @property
     def environment(self) -> Environment:
-        return self._eom.environment
-
-    @property
-    def eom(self) -> EOM:
-        return self._eom
-
-    @property
-    def model(self) -> Model:
-        print(self._model)
-        return self._model
+        return self.eom.environment
 
     @property
     def trajectory_object(self) -> Trajectory:
-        return self._eom.trajectory
-
-
-class FrisPyResults:
-    """
-    An object to hold the results of computing a trajectory
-    """
-
-    __slots__ = [
-        "x",
-        "y",
-        "z",
-        "vx",
-        "vy",
-        "vz",
-        "phi",
-        "theta",
-        "gamma",
-        "dphi",
-        "dtheta",
-        "dgamma",
-        "times",
-    ]
+        return self.eom.trajectory
