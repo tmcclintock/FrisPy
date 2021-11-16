@@ -1,5 +1,3 @@
-from unittest import TestCase
-
 import pytest
 
 from frispy import Disc
