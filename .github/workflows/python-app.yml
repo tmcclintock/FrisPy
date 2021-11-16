@@ -40,8 +40,8 @@ jobs:
         coverage run -m pytest
         coverage report -m
 
-    - name: Send coveralls
-      run: |
-        coveralls --service=gihtub
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Send coveralls
+    #   run: |
+    #     coveralls --service=gihtub
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
