@@ -1,4 +1,4 @@
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 from numbers import Number
 from typing import Dict, List, Optional
 
@@ -32,6 +32,23 @@ class Disc:
         results in an angle of attack of 0.
     """
 
+    _default_initial_conditions = OrderedDict(
+        {
+            "x": 0,
+            "y": 0,
+            "z": 1.0,
+            "vx": 10.0,
+            "vy": 0,
+            "vz": 0,
+            "phi": 0,
+            "theta": 0,
+            "gamma": 0,
+            "dphi": 0,
+            "dtheta": 0,
+            "dgamma": 62.0,
+        }
+    )
+
     def __init__(
         self, model: Model = Model(), eom: Optional[EOM] = None, **kwargs
     ):
@@ -51,12 +68,9 @@ class Disc:
         as the `current_trajectory` attribute, which is a dictionary,
         which is also returned by this function.
 
-        See `these scipy docs <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp>`_
+        See `the scipy docs
+        <https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html#scipy.integrate.solve_ivp>`_
         for more information on the solver.
-
-        .. todo::
-
-           Type this correctly.
 
         .. warning::
 
@@ -84,7 +98,7 @@ class Disc:
         result = solve_ivp(
             fun=self.eom.compute_derivatives,
             t_span=t_span,
-            y0=self.initial_conditions_as_ordered_list,
+            y0=list(self.initial_conditions.values()),
             **kwargs,
         )
         if kwargs.get("dense_output", False):
@@ -94,8 +108,7 @@ class Disc:
         self.current_coordinates = result.y[:, -1]
 
         # Create the results object
-        fpr = {key: result.y[key] for key in self.initial_conditions.keys()}
-        fpr["times"] = result.t
+        fpr = Result(times=result.t, *result.y)
 
         # If specified, return a results object
         if return_scipy_results:
@@ -112,35 +125,12 @@ class Disc:
         return
 
     def set_default_initial_conditions(self, **kwargs) -> None:
-        initial_conditions = OrderedDict(
-            {
-                "x": 0,
-                "y": 0,
-                "z": 1.0,
-                "vx": 10.0,
-                "vy": 0,
-                "vz": 0,
-                "phi": 0,
-                "theta": 0,
-                "gamma": 0,
-                "dphi": 0,
-                "dtheta": 0,
-                "dgamma": 62.0,
-            }
-        )
+        initial_conditions = self._default_initial_conditions.copy()
         assert set(kwargs.keys()).issubset(set(initial_conditions.keys()))
         for key, value in kwargs.items():
             initial_conditions[key] = value
         self.default_initial_conditions = initial_conditions
         return
-
-    @property
-    def initial_conditions_names(self) -> List[str]:
-        return list(self.initial_conditions.keys())
-
-    @property
-    def list_initial_conditions(self) -> List[Number]:
-        return list(self.initial_conditions.values())
 
     @property
     def environment(self) -> Environment:
@@ -149,3 +139,17 @@ class Disc:
     @property
     def trajectory_object(self) -> Trajectory:
         return self.eom.trajectory
+
+
+class Result(
+    namedtuple(
+        "Result", list(Disc._default_initial_conditions.keys()) + ["times"]
+    )
+):
+    """
+    A ``namedtuple`` subclass that contains the coordinate variables
+    and a ``times`` attribute. One can reference the variables in the result
+    as an attribute ``result.x``.
+    """
+
+    pass
