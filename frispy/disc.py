@@ -140,6 +140,13 @@ class Disc:
     def trajectory_object(self) -> Trajectory:
         return self.eom.trajectory
 
+    @property
+    def coordinate_names(self) -> List[str]:
+        """
+        Names of the kinematic variables
+        """
+        return list(self._default_initial_conditions.keys())
+
 
 class Result(
     namedtuple(
