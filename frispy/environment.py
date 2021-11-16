@@ -18,14 +18,14 @@ class Environment(NamedTuple):
         air_density (float): default is 1.225 kg/m^3
         area (float): default is 0.057 m^2
         g (float): default is 9.81 m/s^2; gravitational acceleration on Earth
-        I_zz (float): default is 0.001219 kg*m^2; z-axis moment of inertia
-        I_xx (float): default is 0.175 kg*m^2; x and y-axis moments of inertia
+        I_zz (float): default is 0.002352 kg*m^2; z-axis moment of inertia
+        I_xx (float): default is 0.001219 kg*m^2; x and y-axis moments of inertia
             (i.e. is the same as I_yy and the cross components I_xy)
         mass (float): defualt is 0.175 kg
     """
 
     air_density: float = 1.225  # kg/m^3
-    area: float = 0.57  # m^2
+    area: float = 0.058556  # m^2
     g: float = 9.81  # m/s^2
     I_zz: float = 0.002352  # kg*m^2
     I_xx: float = 0.001219  # kg*m^2
