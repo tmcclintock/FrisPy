@@ -1,6 +1,6 @@
 from collections import OrderedDict, namedtuple
 from numbers import Number
-from typing import List, Optional
+from typing import List, Optional, Set
 
 import numpy as np
 from scipy.integrate import solve_ivp
@@ -129,12 +129,11 @@ class Disc:
 
     def set_default_initial_conditions(self, **kwargs) -> None:
         initial_conditions = self._default_initial_conditions.copy()
-        assert set(kwargs.keys()).issubset(
-            set(initial_conditions.keys()).union(
-                set(self._default_physical_attributes.keys())
-            )
+        valid_keys: Set[str] = set(initial_conditions.keys()).union(
+            set(self._default_physical_attributes.keys())
         )
         for key, value in kwargs.items():
+            assert key in valid_keys, f"invalid key {key}"
             if key in self._default_physical_attributes:
                 pass
             msg = f"invalid type for {key}={value}; {type(value)}"
