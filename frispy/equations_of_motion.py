@@ -21,21 +21,9 @@ class EOM:
         model: Model = Model(),
         trajectory: Trajectory = Trajectory(),
     ):
-        self._environment = environment
-        self._model = model
-        self._trajectory = trajectory
-
-    @property
-    def environment(self) -> Environment:
-        return self._environment
-
-    @property
-    def model(self) -> Model:
-        return self._model
-
-    @property
-    def trajectory(self) -> Trajectory:
-        return self._trajectory
+        self.environment = environment
+        self.model = model
+        self.trajectory = trajectory
 
     def compute_forces(
         self,
@@ -46,9 +34,6 @@ class EOM:
     ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
         """
         Compute the lift, drag, and gravitational forces on the disc.
-
-        Args:
-        TODO
         """
         self.trajectory.phi = phi
         self.trajectory.theta = theta
@@ -88,9 +73,6 @@ class EOM:
     ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
         """
         Compute the torque around each principle axis.
-
-        Args:
-        TODO
         """
         aoa = res["angle_of_attack"]
         res["torque_amplitude"] = (
