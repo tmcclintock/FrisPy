@@ -21,21 +21,9 @@ class EOM:
         model: Model = Model(),
         trajectory: Trajectory = Trajectory(),
     ):
-        self._environment = environment
-        self._model = model
-        self._trajectory = trajectory
-
-    @property
-    def environment(self) -> Environment:
-        return self._environment
-
-    @property
-    def model(self) -> Model:
-        return self._model
-
-    @property
-    def trajectory(self) -> Trajectory:
-        return self._trajectory
+        self.environment = environment
+        self.model = model
+        self.trajectory = trajectory
 
     def compute_forces(
         self,
@@ -46,13 +34,12 @@ class EOM:
     ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
         """
         Compute the lift, drag, and gravitational forces on the disc.
-
-        Args:
-        TODO
         """
-        res = self.trajectory.calculate_intermediate_quantities(
-            phi, theta, velocity, ang_velocity
-        )
+        self.trajectory.phi = phi
+        self.trajectory.theta = theta
+        self.trajectory.velocity = velocity
+        self.trajectory.angular_velocity = ang_velocity
+        res = self.trajectory.derived_quantities()
         aoa = res["angle_of_attack"]
         vhat = velocity / np.linalg.norm(velocity)
         force_amplitude = (
@@ -72,7 +59,7 @@ class EOM:
         res["F_grav"] = (
             self.environment.mass
             * self.environment.g
-            * self.environment.grav_vector
+            * self.environment.grav_unit_vector
         )
         res["F_total"] = res["F_lift"] + res["F_drag"] + res["F_grav"]
         res["Acc"] = res["F_total"] / self.environment.mass
@@ -86,9 +73,6 @@ class EOM:
     ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
         """
         Compute the torque around each principle axis.
-
-        Args:
-        TODO
         """
         aoa = res["angle_of_attack"]
         res["torque_amplitude"] = (

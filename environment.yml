@@ -1,6 +1,15 @@
 name: frispy
 dependencies:
   - python>=3.6
+  - twine
   - numpy
   - scipy
   - matplotlib
+  - isort
+  - black
+  - flake8
+  - pre-commit
+  - pytest
+  - coverage
+  - sphinx_rtd_theme
+  - sphinx-autoapi
