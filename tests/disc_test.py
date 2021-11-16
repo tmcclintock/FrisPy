@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 
 from frispy import Disc
@@ -29,6 +30,13 @@ def test_initial_conditions_kwarg():
             assert d.default_initial_conditions["vz"] == 2.0
         else:
             assert d.default_initial_conditions[key] == value
+
+
+def test_physical_attribute_kwarg():
+    d = Disc(mass=12345, area=0.1234)
+    assert d.mass == 12345
+    assert d.area == 0.1234
+    assert d.diameter == 2 * np.sqrt(d.area / np.pi)
 
 
 def test_compute_trajectory_assert_raises_flight_time_and_t_span():

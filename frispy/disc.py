@@ -2,6 +2,7 @@ from collections import OrderedDict, namedtuple
 from numbers import Number
 from typing import List, Optional
 
+import numpy as np
 from scipy.integrate import solve_ivp
 
 from frispy.environment import Environment
@@ -44,11 +45,19 @@ class Disc:
         }
     )
 
+    _default_physical_attributes = {
+        "area": 0.058556,  # m^2
+        "I_zz": 0.002352,  # kg*m^2
+        "I_xx": 0.001219,  # kg*m^2
+        "mass": 0.175,  # kg
+    }
+
     def __init__(
         self, model: Model = Model(), eom: Optional[EOM] = None, **kwargs
     ):
         self.model = model
         self.eom = eom or EOM(model=self.model)
+        self.set_physical_attributes(**kwargs)
         self.set_default_initial_conditions(**kwargs)
         self.reset_initial_conditions()
 
@@ -120,13 +129,29 @@ class Disc:
 
     def set_default_initial_conditions(self, **kwargs) -> None:
         initial_conditions = self._default_initial_conditions.copy()
-        assert set(kwargs.keys()).issubset(set(initial_conditions.keys()))
+        assert set(kwargs.keys()).issubset(
+            set(initial_conditions.keys()).union(
+                set(self._default_physical_attributes.keys())
+            )
+        )
         for key, value in kwargs.items():
+            if key in self._default_physical_attributes:
+                pass
             msg = f"invalid type for {key}={value}; {type(value)}"
             assert isinstance(value, Number), msg
             initial_conditions[key] = value
         self.default_initial_conditions = initial_conditions
         return
+
+    def set_physical_attributes(self, **kwargs) -> None:
+        for key, value in self._default_physical_attributes.items():
+            setattr(self, key, kwargs.get(key, value))
+        return
+
+    @property
+    def diameter(self) -> float:
+        """Disc diameter."""
+        return 2 * (self.area / np.pi) ** 0.5
 
     @property
     def environment(self) -> Environment:
