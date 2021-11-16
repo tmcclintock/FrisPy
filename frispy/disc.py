@@ -1,6 +1,6 @@
 from collections import OrderedDict, namedtuple
 from numbers import Number
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from scipy.integrate import solve_ivp
 
@@ -21,15 +21,10 @@ class Disc:
     angular velocities are in rad/s.
 
     Args:
-      eom (EOM, optional): the equations of motion
-      initial_conditions (Dict, optional): initial conditions of the disc in
-        flight units are in in "mks" and angles are in radians. By defualt,
-        the initial conditions will be that the disc is 1 meter off the
-        ground (`z=1`), moving at 10 meters/sec in the `x` direction
-        (`vx=10`) and is spinning about it's vertical axis at approximately
-        10 revolutions per second (approx. 62 rad/sec, or `dgamma=62`).
-        All other kinematic variables are set to 0. This configuration
-        results in an angle of attack of 0.
+        model (Model, optional):
+        eom (EOM, optional): the equations of motion
+        kwargs: keyword arguments of a numeric type to specify the initial
+            conditions of the disc. For example ``x=3`` or ``vz=10.``.
     """
 
     _default_initial_conditions = OrderedDict(
@@ -83,9 +78,8 @@ class Disc:
           return_scipy_results (bool, optional): Default is `False`. Flag to
             indicate whether to return the full results object of the solver.
             See the scipy docs for more information.
-          solver_args (Dict[str, Any]): extra arguments to pass
-            to the :meth:`scipy.integrate.solver_ivp` method used to solve
-            the differential equation.
+          kwargs: extra keyword arguments to pass
+            to the :meth:`scipy.integrate.solver_ivp`
         """
         if "t_span" in kwargs:
             assert (
@@ -128,6 +122,8 @@ class Disc:
         initial_conditions = self._default_initial_conditions.copy()
         assert set(kwargs.keys()).issubset(set(initial_conditions.keys()))
         for key, value in kwargs.items():
+            msg = f"invalid type for {key}={value}; {type(value)}"
+            assert isinstance(value, Number), msg
             initial_conditions[key] = value
         self.default_initial_conditions = initial_conditions
         return
