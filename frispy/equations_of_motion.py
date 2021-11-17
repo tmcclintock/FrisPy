@@ -32,11 +32,10 @@ class EOM:
         self.environment = environment
         self.model = model
         # Pre-compute some values to optimize the ODEs
-        self.force_per_v2 = 0.5 * self.environment.air_density * self.area
-        self.torque_per_v2 = (
-            0.5 * self.environment.air_density * self.diameter * self.area
-        )
-
+        self.force_per_v2 = (
+            0.5 * self.environment.air_density * self.area
+        )  # N / (m/s)^2
+        self.torque_per_v2 = self.force_per_v2 * self.diameter  # N * m / (m/s)^2
         self.F_grav = (
             self.mass * self.environment.g * self.environment.grav_unit_vector
         )
