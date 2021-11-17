@@ -36,7 +36,7 @@ class Disc:
             "vy": 0,
             "vz": 0,
             "phi": 0,
-            "theta": 0.5,
+            "theta": 0,
             "gamma": 0,
             "dphi": 0,
             "dtheta": 0,
@@ -69,6 +69,7 @@ class Disc:
     def compute_trajectory(
         self,
         flight_time: float = 3.0,
+        n_times: int = 100,
         return_scipy_results: bool = False,
         **kwargs,
     ):
@@ -87,26 +88,28 @@ class Disc:
            `solver_args`.
 
         Args:
-          flight_time (float, optional): time in seconds that the simulation
-            will run over. Default is 3 seconds.
-          return_scipy_results (bool, optional): Default is `False`. Flag to
-            indicate whether to return the full results object of the solver.
-            See the scipy docs for more information.
-          kwargs: extra keyword arguments to pass
-            to the :meth:`scipy.integrate.solver_ivp`
+            flight_time (float, optional): time in seconds that the simulation
+                will run over. Default is 3 seconds.
+            n_times (int, optional): default 100. Number of samples in time you
+                would like the trajectory. Samples are spaced evenly in time
+                from ``(0, flight_time)``.
+            return_scipy_results (bool, optional): Default is `False`. Flag to
+                indicate whether to return the full results object of the solver.
+                See the scipy docs for more information.
+            kwargs: extra keyword arguments to pass
+                to the :meth:`scipy.integrate.solver_ivp`
         """
-        if "t_span" in kwargs:
-            assert (
-                flight_time is None
-            ), "cannot have t_span in solver_kwargs if flight_time is not None"
-            t_span = kwargs.pop("t_span")
-        else:
-            t_span = (0, flight_time)
+
+        t_span = (0, kwargs.pop("t_span", flight_time))
+        t_eval: np.ndarray = kwargs.pop(
+            "t_eval", np.linspace(t_span[0], t_span[1], n_times)
+        )
 
         result = solve_ivp(
             fun=self.eom.compute_derivatives,
             t_span=t_span,
             y0=list(self.initial_conditions.values()),
+            t_eval=t_eval,
             **kwargs,
         )
         if kwargs.get("dense_output", False):
