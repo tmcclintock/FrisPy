@@ -38,12 +38,6 @@ def test_physical_attribute_kwarg():
     assert d.eom.diameter == 2 * np.sqrt(d.area / np.pi)
 
 
-def test_compute_trajectory_assert_raises_flight_time_and_t_span():
-    d = Disc()
-    with pytest.raises(AssertionError):
-        d.compute_trajectory(t_span=(0, 4))
-
-
 def test_compute_trajectory_basics():
     d = Disc()
     result = d.compute_trajectory()

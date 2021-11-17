@@ -100,7 +100,7 @@ class Disc:
                 to the :meth:`scipy.integrate.solver_ivp`
         """
 
-        t_span = (0, kwargs.pop("t_span", flight_time))
+        t_span = kwargs.pop("t_span", (0, flight_time))
         t_eval: np.ndarray = kwargs.pop(
             "t_eval", np.linspace(t_span[0], t_span[1], n_times)
         )
