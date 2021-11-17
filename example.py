@@ -1,3 +1,8 @@
+"""
+A basic example. See the `notebooks` directory for
+advanced plots.
+"""
+
 import matplotlib.pyplot as plt
 
 from frispy import Disc
