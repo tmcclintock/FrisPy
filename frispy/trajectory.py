@@ -4,7 +4,6 @@ for the disc trajectory.
 """
 
 from dataclasses import dataclass
-from numbers import Number
 from typing import Dict, Union
 
 import numpy as np
@@ -132,8 +131,7 @@ class Trajectory:
         # Angular velocity in lab coordinates
         w_lab = w_prime @ R
         # Angular velocity components along the unit vectors in the lab frame
-        U = np.array([xhat, yhat, zhat])
-        w = U @ w_lab
+        w = np.array([xhat, yhat, zhat]) @ w_lab
         return {
             "unit_vectors": {"xhat": xhat, "yhat": yhat, "zhat": zhat},
             "angle_of_attack": angle_of_attack,
