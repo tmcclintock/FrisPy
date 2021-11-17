@@ -32,7 +32,7 @@ class Disc:
             "x": 0,
             "y": 0,
             "z": 1.0,
-            "vx": 300.0,
+            "vx": 10.0,
             "vy": 0,
             "vz": 0,
             "phi": 0,
@@ -103,7 +103,6 @@ class Disc:
         else:
             t_span = (0, flight_time)
 
-        print(self.initial_conditions)
         result = solve_ivp(
             fun=self.eom.compute_derivatives,
             t_span=t_span,
