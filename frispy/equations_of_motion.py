@@ -1,10 +1,10 @@
+from numbers import Number
 from typing import Dict, Union
 
 import numpy as np
 
 from frispy.environment import Environment
 from frispy.model import Model
-from frispy.trajectory import Trajectory
 
 
 class EOM:
@@ -17,13 +17,86 @@ class EOM:
 
     def __init__(
         self,
+        area: Number,
+        I_xx: Number,
+        I_zz: Number,
+        mass: Number,
         environment: Environment = Environment(),
         model: Model = Model(),
-        trajectory: Trajectory = Trajectory(),
     ):
+        self.area = area
+        self.diameter = 2 * np.sqrt(self.area / np.pi)
+        self.I_xx = I_xx
+        self.I_zz = I_zz
+        self.mass = mass
         self.environment = environment
         self.model = model
-        self.trajectory = trajectory
+        # Pre-compute some values to optimize the ODEs
+        self.force_per_v2 = 0.5 * self.environment.air_density * self.area
+        self.torque_per_v2 = (
+            0.5 * self.environment.air_density * self.diameter * self.area
+        )
+
+        self.F_grav = (
+            self.mass * self.environment.g * self.environment.grav_unit_vector
+        )
+        self.z_hat = np.array([0, 0, 1])
+
+    @staticmethod
+    def rotation_matrix(sp: float, cp: float, st: float, ct) -> np.ndarray:
+        """
+        Compute the (partial) rotation matrix that transforms from the
+        lab frame to the disc frame. Note that because of azimuthal
+        symmetry, the azimuthal angle (`gamma`) is not used.
+        """
+        return np.array(
+            [[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]]
+        )
+
+    def geometric_quantities(
+        self,
+        phi: float,
+        theta: float,
+        velocity: np.ndarray,
+        angular_velocity: np.ndarray,
+    ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
+        """
+        Compute intermediate quantities on the way to computing the time
+        derivatives of the kinematic variables.
+        """
+        # Rotation matrix
+        sp, cp = np.sin(phi), np.cos(phi)
+        st, ct = np.sin(theta), np.cos(theta)
+        R = self.rotation_matrix(sp, cp, st, ct)
+        # Unit vectors
+        zhat = R[2]
+        v_dot_zhat = velocity @ zhat
+        v_in_plane = velocity - zhat * v_dot_zhat
+        xhat = v_in_plane / np.linalg.norm(v_in_plane)
+        yhat = np.cross(zhat, xhat)
+        # Angle of attack
+        angle_of_attack = -np.arctan(v_dot_zhat / np.linalg.norm(v_in_plane))
+        # Disc angular velocities
+        angular_velocity = angular_velocity
+        w_prime = np.array(
+            [
+                angular_velocity[0] * ct,
+                angular_velocity[1],
+                angular_velocity[0] * st + angular_velocity[2],
+            ]
+        )
+        # Angular velocity in lab coordinates
+        w_lab = w_prime @ R
+        # Angular velocity components along the unit vectors in the lab frame
+        w = np.array([xhat, yhat, zhat]) @ w_lab
+        return {
+            "unit_vectors": {"xhat": xhat, "yhat": yhat, "zhat": zhat},
+            "angle_of_attack": angle_of_attack,
+            "rotation_matrix": R,
+            "w_prime": w_prime,
+            "w_lab": w_lab,
+            "w": w,
+        }
 
     def compute_forces(
         self,
@@ -35,19 +108,10 @@ class EOM:
         """
         Compute the lift, drag, and gravitational forces on the disc.
         """
-        self.trajectory.phi = phi
-        self.trajectory.theta = theta
-        self.trajectory.velocity = velocity
-        self.trajectory.angular_velocity = ang_velocity
-        res = self.trajectory.derived_quantities()
+        res = self.geometric_quantities(phi, theta, velocity, ang_velocity)
         aoa = res["angle_of_attack"]
         vhat = velocity / np.linalg.norm(velocity)
-        force_amplitude = (
-            0.5
-            * self.environment.air_density
-            * (velocity @ velocity)
-            * self.environment.area
-        )
+        force_amplitude = self.force_per_v2 * (velocity @ velocity)
         # Compute the lift and drag forces
         res["F_lift"] = (
             self.model.C_lift(aoa)
@@ -56,32 +120,21 @@ class EOM:
         )
         res["F_drag"] = self.model.C_drag(aoa) * force_amplitude * (-vhat)
         # Compute gravitational force
-        res["F_grav"] = (
-            self.environment.mass
-            * self.environment.g
-            * self.environment.grav_unit_vector
-        )
+        res["F_grav"] = self.F_grav
         res["F_total"] = res["F_lift"] + res["F_drag"] + res["F_grav"]
-        res["Acc"] = res["F_total"] / self.environment.mass
+        res["Acc"] = res["F_total"] / self.mass
         return res
 
     def compute_torques(
         self,
         velocity: np.ndarray,
-        ang_velocity: np.ndarray,
         res: Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]],
     ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
         """
         Compute the torque around each principle axis.
         """
         aoa = res["angle_of_attack"]
-        res["torque_amplitude"] = (
-            0.5
-            * self.environment.air_density
-            * (velocity @ velocity)
-            * self.environment.diameter
-            * self.environment.area
-        )
+        res["torque_amplitude"] = self.torque_per_v2 * (velocity @ velocity)
         wx, wy, wz = res["w"]
         # Compute component torques. Note that "x" and "y" are computed
         # in the lab frame
@@ -96,9 +149,7 @@ class EOM:
             * res["unit_vectors"]["yhat"]
         )
         # Computed in the disc frame
-        res["T_z"] = (
-            self.model.C_z(wz) * res["torque_amplitude"] * np.array([0, 0, 1])
-        )
+        res["T_z"] = self.model.C_z(wz) * res["torque_amplitude"] * self.z_hat
         # Rotate into the disc frame
         res["T_x"] = res["rotation_matrix"] @ res["T_x_lab"]
         res["T_y"] = res["rotation_matrix"] @ res["T_y_lab"]
@@ -126,29 +177,16 @@ class EOM:
         Returns:
           derivatives of all coordinates
         """
-        x, y, z, vx, vy, vz, phi, theta, gamma, dphi, dtheta, dgamma = coordinates
         # If the disk hit the ground, then stop calculations
-        if z <= 0:
+        if coordinates[2] <= 0:
             return coordinates * 0
 
-        velocity = np.array([vx, vy, vz])
-        ang_velocity = np.array([dphi, dtheta, dgamma])
-        result = self.compute_forces(phi, theta, velocity, ang_velocity)
-        result = self.compute_torques(velocity, ang_velocity, result)
-        derivatives = np.array(
-            [
-                vx,
-                vy,
-                vz,
-                result["Acc"][0],  # x component of acceleration
-                result["Acc"][1],  # y component of acceleration
-                result["Acc"][2],  # z component of acceleration
-                dphi,
-                dtheta,
-                dgamma,
-                result["T"][0],  # phi component of ang. acc.
-                result["T"][1],  # theta component of ang. acc.
-                result["T"][2],  # gamma component of ang. acc.
-            ]
+        velocity = coordinates[3:6]
+        ang_velocity = coordinates[9:12]
+        result = self.compute_forces(
+            coordinates[6], coordinates[7], velocity, ang_velocity
         )
-        return derivatives
+        result = self.compute_torques(velocity, result)
+        return np.concatenate(
+            (velocity, result["Acc"], ang_velocity, result["T"])
+        )

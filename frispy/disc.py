@@ -8,7 +8,6 @@ from scipy.integrate import solve_ivp
 from frispy.environment import Environment
 from frispy.equations_of_motion import EOM
 from frispy.model import Model
-from frispy.trajectory import Trajectory
 
 
 class Disc:
@@ -33,11 +32,11 @@ class Disc:
             "x": 0,
             "y": 0,
             "z": 1.0,
-            "vx": 10.0,
+            "vx": 300.0,
             "vy": 0,
             "vz": 0,
             "phi": 0,
-            "theta": 0,
+            "theta": 0.5,
             "gamma": 0,
             "dphi": 0,
             "dtheta": 0,
@@ -56,10 +55,16 @@ class Disc:
         self, model: Model = Model(), eom: Optional[EOM] = None, **kwargs
     ):
         self.model = model
-        self.eom = eom or EOM(model=self.model)
         self.set_physical_attributes(**kwargs)
         self.set_default_initial_conditions(**kwargs)
         self.reset_initial_conditions()
+        self.eom = eom or EOM(
+            model=self.model,
+            area=self.area,
+            I_xx=self.I_xx,
+            I_zz=self.I_zz,
+            mass=self.mass,
+        )
 
     def compute_trajectory(
         self,
@@ -98,6 +103,7 @@ class Disc:
         else:
             t_span = (0, flight_time)
 
+        print(self.initial_conditions)
         result = solve_ivp(
             fun=self.eom.compute_derivatives,
             t_span=t_span,
@@ -148,17 +154,8 @@ class Disc:
         return
 
     @property
-    def diameter(self) -> float:
-        """Disc diameter."""
-        return 2 * (self.area / np.pi) ** 0.5
-
-    @property
     def environment(self) -> Environment:
         return self.eom.environment
-
-    @property
-    def trajectory_object(self) -> Trajectory:
-        return self.eom.trajectory
 
     @property
     def coordinate_names(self) -> List[str]:

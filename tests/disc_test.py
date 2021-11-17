@@ -11,7 +11,6 @@ def test_smoke():
 
 def test_disc_has_properties():
     d = Disc()
-    assert hasattr(d, "trajectory_object")
     assert hasattr(d, "model")
     assert hasattr(d, "environment")
     assert hasattr(d, "eom")
@@ -36,7 +35,7 @@ def test_physical_attribute_kwarg():
     d = Disc(mass=12345, area=0.1234)
     assert d.mass == 12345
     assert d.area == 0.1234
-    assert d.diameter == 2 * np.sqrt(d.area / np.pi)
+    assert d.eom.diameter == 2 * np.sqrt(d.area / np.pi)
 
 
 def test_compute_trajectory_assert_raises_flight_time_and_t_span():
