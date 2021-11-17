@@ -19,12 +19,12 @@ class Model:
     PLa: float = 1.9
     PD0: float = 0.18
     PDa: float = 0.69
-    PTxwx: float = 0.43
-    PTxwz: float = -1.4e-2
-    PTy0: float = -8.2e-2
-    PTya: float = -1.2e-2
-    PTywy: float = -1.7e-3
-    PTzwz: float = -3.4e-5
+    PTxwx: float = -0.013
+    PTxwz: float = -0.0017
+    PTy0: float = -0.082
+    PTya: float = 0.43
+    PTywy: float = -0.014
+    PTzwz: float = -0.000034
     alpha_0: float = 4 * np.pi / 180
 
     #####################################################################
