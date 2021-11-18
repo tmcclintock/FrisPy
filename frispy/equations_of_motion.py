@@ -2,7 +2,6 @@ from numbers import Number
 from typing import Dict, Union
 
 import numpy as np
-from numpy.lib.function_base import angle
 
 from frispy.environment import Environment
 from frispy.model import Model
