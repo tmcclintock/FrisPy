@@ -2,6 +2,7 @@ from numbers import Number
 from typing import Dict, Union
 
 import numpy as np
+from numpy.lib.function_base import angle
 
 from frispy.environment import Environment
 from frispy.model import Model
@@ -38,7 +39,7 @@ class EOM:
         self.torque_per_v2 = self.force_per_v2 * self.diameter  # N * m / (m/s)^2
         self.F_grav = (
             self.mass * self.environment.g * self.environment.grav_unit_vector
-        )
+        )  # looks like [0, 0, -m*g]
         self.z_hat = np.array([0, 0, 1])
 
     @staticmethod
@@ -47,10 +48,47 @@ class EOM:
         Compute the (partial) rotation matrix that transforms from the
         lab frame to the disc frame. Note that because of azimuthal
         symmetry, the azimuthal angle (`gamma`) is not used.
+
+        This matrix (R) can be used to transform a vector from the lab frame (L)
+        into the disk frame (D), i.e.: r_D = R dot r_L.
+
+        The ``z_hat`` unit vector in the disk frame (D) will always be pointing
+        perpendicular up from the top face of the disk.
         """
         return np.array(
             [[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]]
         )
+
+    @classmethod
+    def compute_angle_of_attack(
+        cls,
+        phi: float,
+        theta: float,
+        velocity: np.ndarray,
+        return_all_variables: bool = False,
+    ):
+        # Rotation matrix
+        sp, cp = np.sin(phi), np.cos(phi)
+        st, ct = np.sin(theta), np.cos(theta)
+        rotation_matrix = cls.rotation_matrix(sp, cp, st, ct)
+        # Unit vectors
+        zhat = rotation_matrix[2]
+        v_dot_zhat = velocity @ zhat
+        v_in_plane = velocity - zhat * v_dot_zhat
+        angle_of_attack = -np.arctan(v_dot_zhat / np.linalg.norm(v_in_plane))
+        if return_all_variables:
+            return (
+                angle_of_attack,
+                sp,
+                cp,
+                st,
+                ct,
+                rotation_matrix,
+                v_dot_zhat,
+                v_in_plane,
+            )
+        else:
+            return angle_of_attack
 
     def geometric_quantities(
         self,
@@ -63,18 +101,22 @@ class EOM:
         Compute intermediate quantities on the way to computing the time
         derivatives of the kinematic variables.
         """
-        # Rotation matrix
-        sp, cp = np.sin(phi), np.cos(phi)
-        st, ct = np.sin(theta), np.cos(theta)
-        R = self.rotation_matrix(sp, cp, st, ct)
-        # Unit vectors
-        zhat = R[2]
-        v_dot_zhat = velocity @ zhat
-        v_in_plane = velocity - zhat * v_dot_zhat
-        xhat = v_in_plane / np.linalg.norm(v_in_plane)
+        (
+            angle_of_attack,
+            _,
+            _,
+            st,
+            ct,
+            rotation_matrix,
+            _,
+            v_in_plane,
+        ) = self.compute_angle_of_attack(
+            phi, theta, velocity, return_all_variables=True
+        )
+        zhat: np.ndarray = rotation_matrix[2]
+        xhat: np.ndarray = v_in_plane / np.linalg.norm(v_in_plane)
         yhat = np.cross(zhat, xhat)
         # Angle of attack
-        angle_of_attack = -np.arctan(v_dot_zhat / np.linalg.norm(v_in_plane))
         # Disc angular velocities
         angular_velocity = angular_velocity
         w_prime = np.array(
@@ -85,13 +127,13 @@ class EOM:
             ]
         )
         # Angular velocity in lab coordinates
-        w_lab = w_prime @ R
+        w_lab = w_prime @ rotation_matrix
         # Angular velocity components along the unit vectors in the lab frame
         w = np.array([xhat, yhat, zhat]) @ w_lab
         return {
             "unit_vectors": {"xhat": xhat, "yhat": yhat, "zhat": zhat},
             "angle_of_attack": angle_of_attack,
-            "rotation_matrix": R,
+            "rotation_matrix": rotation_matrix,
             "w_prime": w_prime,
             "w_lab": w_lab,
             "w": w,
