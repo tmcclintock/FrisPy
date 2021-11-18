@@ -41,6 +41,14 @@ class EOM:
         )  # looks like [0, 0, -m*g]
         self.z_hat = np.array([0, 0, 1])
 
+    @classmethod
+    def rotation_matrix_from_phi_theta(
+        cls, phi: float, theta: float
+    ) -> np.ndarray:
+        sp, cp = np.sin(phi), np.cos(phi)
+        st, ct = np.sin(theta), np.cos(theta)
+        return cls.rotation_matrix(sp, cp, st, ct)
+
     @staticmethod
     def rotation_matrix(sp: float, cp: float, st: float, ct) -> np.ndarray:
         """
