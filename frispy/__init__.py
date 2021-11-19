@@ -4,5 +4,5 @@ from .equations_of_motion import EOM
 from .model import Model
 
 __author__ = "Tom McClintock thmsmcclintock@gmail.com"
-__version__ = "1.0.4"
+__version__ = "1.1.0"
 __docs__ = "Simulates flying spinning discs."
