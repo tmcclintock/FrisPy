@@ -1,3 +1,4 @@
+"""Configuration file for sphinx docs."""
 # Configuration file for the Sphinx documentation builder.
 #
 # This file only contains a selection of the most common options. For a full
@@ -12,8 +13,6 @@
 #
 import os
 import sys
-
-import sphinx_rtd_theme
 
 sys.path.insert(0, os.path.abspath("../../"))
 

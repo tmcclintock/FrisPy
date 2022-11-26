@@ -78,9 +78,9 @@ jobs:
         run: |
           poetry run interrogate $project_name
 
-      # - name: pydocstyle
-      #   run: |
-      #     poetry run pydocstyle $project_name
+      - name: pydocstyle
+        run: |
+          poetry run pydocstyle $project_name
 
       #----------------------------------------------
       # run test suite

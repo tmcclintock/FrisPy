@@ -1,5 +1,6 @@
 """Disc class."""
 
+from dataclasses import dataclass
 from typing import Dict, Optional, Tuple
 
 import numpy as np
@@ -10,69 +11,64 @@ from frispy.equations_of_motion import EOM
 from frispy.model import Model
 
 
+@dataclass
 class Disc:
     """Flying spinning disc object.
 
-    The disc object contains only physical
-    parameters of the disc and environment that it exists (e.g. gravitational
-    acceleration and air density). Note that the default area, mass, and
-    inertial moments are for Discraft Ultrastars (175 grams or 0.175 kg).
+    One can specify initial coordinates, initial kinematic variables, the two
+    non-zero elements of the moments of inertia tensor, the face area, mass,
+    air density, and gravitational acceleration. Note that the default area,
+    mass, and inertial moments are for Discraft Ultrastars (0.175 kg).
 
-    All masses are kg, lengths are meters (m) and times are seconds (s). That
-    is, these files all use `mks` units. Angular units use radians (rad), and
+    MKS units used throughout. Angular units use radians (rad), and
     angular velocities are in rad/s.
 
     Args:
-        model (Model, optional):
-        eom (EOM, optional): the equations of motion
-        kwargs: keyword arguments of a numeric type to specify the initial
-            conditions of the disc. For example ``x=3`` or ``vz=10.``.
+        x: horizontal position
+        y: horizontal position
+        z: vertical position
+        vx: horizontal speed
+        vy: horizontal speed
+        vz: vertical speed
+        phi: first Euler angle. Pitch angle when velocity is horizontal
+        theta: second Euler angle. Roll angle when velocity is horizontal
+        gamma: third Euler angle. Spin angle
+        dphi: angular velocity
+        dtheta: angular velocity
+        dgamma: spin angular velocity
+        area: face area
+        I_xx: pitch and roll moments of inertia
+        I_zz: spin moment of inertia
+        air_density: default is sea level
+        g: gravitational acceleration
+        model: defines how accelerations depend on velocities
+        eom: equations of motion
     """
 
-    def __init__(
-        self,
-        x: float = 0,  # m / s
-        y: float = 0,  # m / s
-        z: float = 1.0,  # m / s
-        vx: float = 10.0,  # m / s
-        vy: float = 0,  # m / s
-        vz: float = 0,  # m / s
-        phi: float = 0,  # rad
-        theta: float = 0,  # rad
-        gamma: float = 0,  # rad
-        dphi: float = 0,  # rad / sec
-        dtheta: float = 0,  # rad / sec
-        dgamma: float = 62.0,  # rad / sec
-        area: float = 0.058556,  # m ^ 2
-        I_xx: float = 0.001219,  # kg * m ^ 2
-        I_zz: float = 0.002352,  # kg * m ^ 2
-        mass: float = 0.175,  # kg
-        air_density: float = 1.225,  # kg / m ^ 3
-        g: float = 9.81,  # m / s ^ 2
-        model: Model = Model(),
-        eom: Optional[EOM] = None,
-    ):
-        """Constructor."""
-        self.x = x
-        self.y = y
-        self.z = z
-        self.vx = vx
-        self.vy = vy
-        self.vz = vz
-        self.phi = phi
-        self.theta = theta
-        self.gamma = gamma
-        self.dphi = dphi
-        self.dtheta = dtheta
-        self.dgamma = dgamma
-        self.area = area
-        self.I_xx = I_xx
-        self.I_zz = I_zz
-        self.mass = mass
-        self.air_density = air_density
-        self.g = g
-        self.model = model
-        self.eom = eom or EOM(
+    x: float = 0  # m / s
+    y: float = 0  # m / s
+    z: float = 1.0  # m / s
+    vx: float = 10.0  # m / s
+    vy: float = 0  # m / s
+    vz: float = 0  # m / s
+    phi: float = 0  # rad
+    theta: float = 0  # rad
+    gamma: float = 0  # rad
+    dphi: float = 0  # rad / sec
+    dtheta: float = 0  # rad / sec
+    dgamma: float = 62.0  # rad / sec
+    area: float = 0.058556  # m ^ 2
+    I_xx: float = 0.001219  # kg * m ^ 2
+    I_zz: float = 0.002352  # kg * m ^ 2
+    mass: float = 0.175  # kg
+    air_density: float = 1.225  # kg / m ^ 3
+    g: float = 9.81  # m / s ^ 2
+    model: Model = Model()
+    eom: Optional[EOM] = None
+
+    def __post_init__(self) -> None:
+        """Sets the ``eom`` (equations of motion) attribute."""
+        self.eom = self.eom or EOM(
             model=self.model,
             area=self.area,
             I_xx=self.I_xx,
@@ -81,6 +77,7 @@ class Disc:
             air_density=self.air_density,
             g=self.g,
         )
+        return
 
     def compute_trajectory(
         self,
@@ -104,13 +101,16 @@ class Disc:
            `solver_args`.
 
         Args:
-            flight_time (float, optional): time in seconds that the simulation
-                will run over. Default is 3 seconds.
-            n_times (int, optional): default 100. Number of samples in time you
-                would like the trajectory. Samples are spaced evenly in time
-                from ``(0, flight_time)``.
+            flight_time: time in seconds that the simulation
+                will run over
+            n_times: Number of samples in time for the trajectory.
+                Samples are spaced evenly in time from ``(0, flight_time)``.
             solver_kwargs: extra keyword arguments to pass
                 to the :meth:`scipy.integrate.solver_ivp`
+
+        Returns:
+            first element is a dict of all kinematic variables and the
+            second is the ``solver_ivp`` results object
         """
         # Pop out these kwargs and take defaults based on our API
         t_span = solver_kwargs.pop("t_span", (0, flight_time))

@@ -1,6 +1,4 @@
-"""
-Physical model for the forces and torques on a disc.
-"""
+"""Physical model for the forces and torques on a disc."""
 
 from dataclasses import dataclass
 
@@ -9,10 +7,23 @@ import numpy as np
 
 @dataclass
 class Model:
-    """
-    Coefficient model for a disc. Holds all of the aerodynamic
-    parameters coupling the kinematic variables (spins and angles)
-    to the force magnitudes.
+    """Kinematic model for a disc.
+
+    Holds all of the aerodynamic parameters coupling the kinematic variables
+    (velocities, and angular velocities) to the force and torque magnitudes.
+
+    Args:
+        PL0: lift force at zero angle of attack (aoa; i.e. the intercept)
+        PLa: lift force linear scaling of aoa
+        PD0: drag force at zero aoa (i.e. the intercept)
+        PDa: drag force linear scaling of aoa
+        PTxwx: torque around x-hat linear scaling with x-hat angular velocity
+        PTxwz: torque around x-hat linear scaling with z-hat angular velocity (spin)
+        PTy0: torque around y-hat intercept
+        PTya: torque around y-hat linear scaling with aoa
+        PTywy: torque around y-hat linear scaling with y-hat angular velocity
+        PTzwz: torque around z-hat linear scaling with z-hat angular velocity (spin)
+        alpha_0: angle of attack at minimal drag (i.e. critical aoa)
     """
 
     PL0: float = 0.33
@@ -33,66 +44,70 @@ class Model:
     #####################################################################
 
     def C_lift(self, alpha: float) -> float:
-        """
-        Lift force scale factor. Linear in the angle of attack (`alpha`).
+        """Lift force scale factor.
+
+        Linear in the angle of attack (``alpha``).
 
         Args:
-            alpha (float): angle of attack in radians
+            alpha: angle of attack in radians
 
         Returns:
-            (float) lift force scale factor
+            lift force scale factor
         """
         return self.PL0 + self.PLa * alpha
 
     def C_drag(self, alpha: float) -> float:
-        """
-        Drag force scale factor. Quadratic in the angle of attack (`alpha`).
+        """Drag force scale factor.
+
+        Quadratic in the angle of attack (``alpha``).
 
         Args:
-            alpha (float): angle of attack in radians
+            alpha: angle of attack in radians
 
         Returns:
-            (float) drag force scale factor
+             drag force scale factor
         """
         return self.PD0 + self.PDa * (alpha - self.alpha_0) ** 2
 
     def C_x(self, wx: float, wz: float) -> float:
-        """
-        'x'-torque scale factor. Linearly additive in the 'z' angular velocity
-        (`w_z`) and the 'x' angular velocity (`w_x`).
+        """Torque scale factor around x-hat.
+
+        Linearly in the z angular velocity
+        (``w_z``) and the x angular velocity (``w_x``).
 
         Args:
-            wx (float): 'x' angular velocity in radians per second
-            wz (float): 'z' angular velocity in radians per second
+            wx: x angular velocity in radians per second
+            wz: z angular velocity in radians per second
 
         Returns:
-            (float) 'x'-torque scale factor
+            torque scale factor around x-hat
         """
         return self.PTxwx * wx + self.PTxwz * wz
 
     def C_y(self, alpha: float, wy: float) -> float:
-        """
-        'y'-torque scale factor. Linearly additive in the 'y' angular velocity
-        (`w_y`) and the angle of attack (`alpha`).
+        """Toruq scalef actor around y-hat.
+
+        Linearly in the y angular velocity
+        (``w_y``) and the angle of attack (``alpha``).
 
         Args:
-            alpha (float): angle of attack in radians
-            wy (float): 'y' angular velocity in radians per second
+            alpha: angle of attack in radians
+            wy: y angular velocity in radians per second
 
         Returns:
-            (float) 'y'-torque scale factor
+            torque scale factor around y-hat
         """
         return self.PTy0 + self.PTywy * wy + self.PTya * alpha
 
     def C_z(self, wz: float) -> float:
-        """
-        'z'-torque scale factor. Linear in the 'z' angular velocity
-        (`w_z`).
+        """Torque scale factor around z-hat.
+
+        Linear in the z angular velocity (``w_z``).
 
         Args:
-            wz (float): 'z' angular velocity in radians per second
+            wz: z angular velocity in radians per second
 
         Returns:
-            (float) 'z'-torque scale factor
+            torque scale factor around z-hat
         """
         return self.PTzwz * wz
