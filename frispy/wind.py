@@ -17,7 +17,7 @@ class Wind(ABC):
     """
 
     @abstractmethod
-    def get_wind(
+    def wind_vector(
         self,
         t: Optional[Union[float, int, np.ndarray]],
         position: Optional[Union[List, np.ndarray]],
@@ -33,7 +33,7 @@ class NoWind(Wind):
     No wind.
     """
 
-    def get_wind(self, *args) -> np.ndarray:
+    def wind_vector(self, *args) -> np.ndarray:
         """
         All components are zero.
         """
@@ -49,8 +49,10 @@ class ConstantWind(Wind):
         self,
         wind_vector: Optional[np.ndarray] = None,
     ):
+        """Constructor."""
         super().__init__()
-        self.wind_vector = wind_vector or np.zeros(3)
+        self._wind_vector = wind_vector or np.zeros(3)
 
-    def get_wind(self, *args) -> np.ndarray:
-        return self.wind_vector
+    def wind_vector(self, *args) -> np.ndarray:
+        """Return ``self._wind_vector``."""
+        return self._wind_vector

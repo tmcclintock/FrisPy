@@ -71,7 +71,7 @@ exclude_lines = ["pragma: no cover", "if __name__ == .__main__.:"]
 [tool.interrogate]
 fail-under = 85
 verbose = 1
-exclude = ["poetry.lock", "pyproject.toml", "*tests/"]
+exclude = ["poetry.lock", "pyproject.toml", "*tests/", "*docs/"]
 
 [tool.pydocstyle]
 convention = "google"

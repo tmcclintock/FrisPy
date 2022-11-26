@@ -1,0 +1,1 @@
+"""Frispy module."""
