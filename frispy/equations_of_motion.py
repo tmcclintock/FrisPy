@@ -162,9 +162,7 @@ class EOM:
         velocity: np.ndarray,
         ang_velocity: np.ndarray,
     ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
-        """
-        Compute the lift, drag, and gravitational forces on the disc.
-        """
+        """Computes the lift, drag, and gravitational forces on the disc."""
         res = self.geometric_quantities(phi, theta, velocity, ang_velocity)
         aoa = res["angle_of_attack"]
         vhat = velocity / np.linalg.norm(velocity)
@@ -187,9 +185,7 @@ class EOM:
         velocity: np.ndarray,
         res: Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]],
     ) -> Dict[str, Union[float, np.ndarray, Dict[str, np.ndarray]]]:
-        """
-        Compute the torque around each principle axis.
-        """
+        """Computes the torque around each principle axis."""
         aoa = res["angle_of_attack"]
         res["torque_amplitude"] = self.torque_per_v2 * (velocity @ velocity)
         wx, wy, wz = res["w"]
