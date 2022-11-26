@@ -6,7 +6,6 @@ import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.optimize import OptimizeResult
 
-from frispy.environment import Environment
 from frispy.equations_of_motion import EOM
 from frispy.model import Model
 
@@ -48,9 +47,10 @@ class Disc:
         I_xx: float = 0.001219,  # kg * m ^ 2
         I_zz: float = 0.002352,  # kg * m ^ 2
         mass: float = 0.175,  # kg
+        air_density: float = 1.225,  # kg / m ^ 3
+        g: float = 9.81,  # m / s ^ 2
         model: Model = Model(),
         eom: Optional[EOM] = None,
-        **kwargs,
     ):
         """Constructor."""
         self.x = x
@@ -69,6 +69,8 @@ class Disc:
         self.I_xx = I_xx
         self.I_zz = I_zz
         self.mass = mass
+        self.air_density = air_density
+        self.g = g
         self.model = model
         self.eom = eom or EOM(
             model=self.model,
@@ -76,6 +78,8 @@ class Disc:
             I_xx=self.I_xx,
             I_zz=self.I_zz,
             mass=self.mass,
+            air_density=self.air_density,
+            g=self.g,
         )
 
     def compute_trajectory(
@@ -154,11 +158,3 @@ class Disc:
             },
             result,
         )
-
-    @property
-    def environment(self) -> Environment:
-        """Pointer to the envronment.
-
-        TODO: remove
-        """
-        return self.eom.environment

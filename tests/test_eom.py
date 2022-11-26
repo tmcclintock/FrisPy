@@ -28,7 +28,6 @@ class TestEOM(TestCase):
     def test_eom_has_properties(self):
         eom = EOM(**self.kwargs)
         assert hasattr(eom, "model")
-        assert hasattr(eom, "environment")
 
     def test_compute_forces(self):
         eom = EOM(**self.kwargs)
