@@ -5,7 +5,6 @@ from typing import Dict, Union
 
 import numpy as np
 
-from frispy.environment import Environment
 from frispy.model import Model
 
 
@@ -23,7 +22,8 @@ class EOM:
         I_xx: Number,
         I_zz: Number,
         mass: Number,
-        environment: Environment = Environment(),
+        air_density: float = 1.225,
+        g: float = 9.81,
         model: Model = Model(),
     ):
         """Constructor."""
@@ -32,16 +32,13 @@ class EOM:
         self.I_xx = I_xx
         self.I_zz = I_zz
         self.mass = mass
-        self.environment = environment
         self.model = model
+        self.air_density = air_density
+        self.g = g
         # Pre-compute some values to optimize the ODEs
-        self.force_per_v2 = (
-            0.5 * self.environment.air_density * self.area
-        )  # N / (m/s)^2
+        self.force_per_v2 = 0.5 * self.air_density * self.area  # N / (m/s)^2
         self.torque_per_v2 = self.force_per_v2 * self.diameter  # N * m / (m/s)^2
-        self.F_grav = (
-            self.mass * self.environment.g * self.environment.grav_unit_vector
-        )  # looks like [0, 0, -m*g]
+        self.F_grav = np.array([0, 0, -self.mass * self.g])
         self.z_hat = np.array([0, 0, 1])
 
     @classmethod

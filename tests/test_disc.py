@@ -11,7 +11,6 @@ def test_smoke():
 def test_disc_has_properties():
     d = Disc()
     assert hasattr(d, "model")
-    assert hasattr(d, "environment")
     assert hasattr(d, "eom")
 
 
