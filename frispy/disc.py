@@ -1,11 +1,10 @@
 """Disc class."""
 
-from collections import OrderedDict, namedtuple
-from numbers import Number
-from typing import List, Optional, Set
+from typing import Dict, Optional, Tuple
 
 import numpy as np
 from scipy.integrate import solve_ivp
+from scipy.optimize import OptimizeResult
 
 from frispy.environment import Environment
 from frispy.equations_of_motion import EOM
@@ -31,38 +30,46 @@ class Disc:
             conditions of the disc. For example ``x=3`` or ``vz=10.``.
     """
 
-    _default_initial_conditions = OrderedDict(
-        {
-            "x": 0,
-            "y": 0,
-            "z": 1.0,
-            "vx": 10.0,
-            "vy": 0,
-            "vz": 0,
-            "phi": 0,
-            "theta": 0,
-            "gamma": 0,
-            "dphi": 0,
-            "dtheta": 0,
-            "dgamma": 62.0,
-        }
-    )
-    """Default initial conditions."""
-
-    _default_physical_attributes = {
-        "area": 0.058556,  # m^2
-        "I_zz": 0.002352,  # kg*m^2
-        "I_xx": 0.001219,  # kg*m^2
-        "mass": 0.175,  # kg
-    }
-    """Default physical attributes."""
-
-    def __init__(self, model: Model = Model(), eom: Optional[EOM] = None, **kwargs):
+    def __init__(
+        self,
+        x: float = 0,  # m / s
+        y: float = 0,  # m / s
+        z: float = 1.0,  # m / s
+        vx: float = 10.0,  # m / s
+        vy: float = 0,  # m / s
+        vz: float = 0,  # m / s
+        phi: float = 0,  # rad
+        theta: float = 0,  # rad
+        gamma: float = 0,  # rad
+        dphi: float = 0,  # rad / sec
+        dtheta: float = 0,  # rad / sec
+        dgamma: float = 62.0,  # rad / sec
+        area: float = 0.058556,  # m ^ 2
+        I_xx: float = 0.001219,  # kg * m ^ 2
+        I_zz: float = 0.002352,  # kg * m ^ 2
+        mass: float = 0.175,  # kg
+        model: Model = Model(),
+        eom: Optional[EOM] = None,
+        **kwargs,
+    ):
         """Constructor."""
+        self.x = x
+        self.y = y
+        self.z = z
+        self.vx = vx
+        self.vy = vy
+        self.vz = vz
+        self.phi = phi
+        self.theta = theta
+        self.gamma = gamma
+        self.dphi = dphi
+        self.dtheta = dtheta
+        self.dgamma = dgamma
+        self.area = area
+        self.I_xx = I_xx
+        self.I_zz = I_zz
+        self.mass = mass
         self.model = model
-        self.set_physical_attributes(**kwargs)
-        self.set_default_initial_conditions(**kwargs)
-        self.reset_initial_conditions()
         self.eom = eom or EOM(
             model=self.model,
             area=self.area,
@@ -75,9 +82,8 @@ class Disc:
         self,
         flight_time: float = 3.0,
         n_times: int = 100,
-        return_scipy_results: bool = False,
-        **kwargs,
-    ):
+        **solver_kwargs,
+    ) -> Tuple[Dict[str, np.ndarray], OptimizeResult]:
         """Call the differential equation solver to computethe trajectory.
 
         The kinematic variables and timesteps are saved
@@ -99,71 +105,55 @@ class Disc:
             n_times (int, optional): default 100. Number of samples in time you
                 would like the trajectory. Samples are spaced evenly in time
                 from ``(0, flight_time)``.
-            return_scipy_results (bool, optional): Default is `False`. Flag to
-                indicate whether to return the full results object of the solver.
-                See the scipy docs for more information.
-            kwargs: extra keyword arguments to pass
+            solver_kwargs: extra keyword arguments to pass
                 to the :meth:`scipy.integrate.solver_ivp`
         """
-        t_span = kwargs.pop("t_span", (0, flight_time))
-        t_eval: np.ndarray = kwargs.pop(
+        # Pop out these kwargs and take defaults based on our API
+        t_span = solver_kwargs.pop("t_span", (0, flight_time))
+        t_eval: np.ndarray = solver_kwargs.pop(
             "t_eval", np.linspace(t_span[0], t_span[1], n_times)
         )
 
+        # Call the solver
         result = solve_ivp(
             fun=self.eom.compute_derivatives,
             t_span=t_span,
-            y0=list(self.initial_conditions.values()),
+            y0=[
+                self.x,
+                self.y,
+                self.z,
+                self.vx,
+                self.vy,
+                self.vz,
+                self.phi,
+                self.theta,
+                self.gamma,
+                self.dphi,
+                self.dtheta,
+                self.dgamma,
+            ],
             t_eval=t_eval,
-            **kwargs,
+            **solver_kwargs,
         )
-        if kwargs.get("dense_output", False):
-            return result
 
-        # Set the current coordinates to the last point
-        self.current_coordinates = result.y[:, -1]
-
-        # Create the results object
-        fpr = Result(times=result.t, *result.y)
-
-        # If specified, return a results object
-        if return_scipy_results:
-            return fpr, result
-        else:
-            return fpr
-
-    def reset_initial_conditions(self) -> None:
-        """Set the initial_conditions of the disc to the default."""
-        self.initial_conditions = self.default_initial_conditions
-        return
-
-    def set_default_initial_conditions(self, **kwargs) -> None:
-        """Setter for default initial conditions.
-
-        TODO: remove.
-        """
-        initial_conditions = self._default_initial_conditions.copy()
-        valid_keys: Set[str] = set(initial_conditions.keys()).union(
-            set(self._default_physical_attributes.keys())
+        return (
+            {
+                "times": result.t,
+                "x": result.y[0],
+                "y": result.y[1],
+                "z": result.y[2],
+                "vx": result.y[3],
+                "vy": result.y[4],
+                "vz": result.y[5],
+                "phi": result.y[6],
+                "theta": result.y[7],
+                "gamma": result.y[8],
+                "dphi": result.y[9],
+                "dtheta": result.y[10],
+                "dgamma": result.y[11],
+            },
+            result,
         )
-        for key, value in kwargs.items():
-            assert key in valid_keys, f"invalid key {key}"
-            if key in self._default_physical_attributes:
-                pass
-            msg = f"invalid type for {key}={value}; {type(value)}"
-            assert isinstance(value, Number), msg
-            initial_conditions[key] = value
-        self.default_initial_conditions = initial_conditions
-        return
-
-    def set_physical_attributes(self, **kwargs) -> None:
-        """Setter for default physical attributes.
-
-        TODO: remove.
-        """
-        for key, value in self._default_physical_attributes.items():
-            setattr(self, key, kwargs.get(key, value))
-        return
 
     @property
     def environment(self) -> Environment:
@@ -172,23 +162,3 @@ class Disc:
         TODO: remove
         """
         return self.eom.environment
-
-    @property
-    def coordinate_names(self) -> List[str]:
-        """Names of the kinematic variables.
-
-        TODO: remove
-        """
-        return list(self._default_initial_conditions.keys())
-
-
-class Result(
-    namedtuple("Result", list(Disc._default_initial_conditions.keys()) + ["times"])
-):
-    """
-    A ``namedtuple`` subclass that contains the coordinate variables
-    and a ``times`` attribute. One can reference the variables in the result
-    as an attribute ``result.x``.
-    """
-
-    pass

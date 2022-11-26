@@ -15,21 +15,6 @@ def test_disc_has_properties():
     assert hasattr(d, "eom")
 
 
-def test_initial_conditions():
-    d = Disc()
-    for key, value in d._default_initial_conditions.items():
-        assert d.default_initial_conditions[key] == value
-
-
-def test_initial_conditions_kwarg():
-    d = Disc(vz=2.0)
-    for key, value in d._default_initial_conditions.items():
-        if key == "vz":
-            assert d.default_initial_conditions["vz"] == 2.0
-        else:
-            assert d.default_initial_conditions[key] == value
-
-
 def test_physical_attribute_kwarg():
     d = Disc(mass=12345, area=0.1234)
     assert d.mass == 12345
@@ -39,40 +24,25 @@ def test_physical_attribute_kwarg():
 
 def test_compute_trajectory_basics():
     d = Disc()
-    result = d.compute_trajectory()
-    for x in d.coordinate_names:
-        assert len(result.times) == len(getattr(result, x))
+    dct, _ = d.compute_trajectory()
+    assert len(dct) == 13
+    n_times = len(dct["times"])
+    for v in dct.values():
+        assert len(v) == n_times
 
 
 def test_compute_trajectory_repeatable():
     d = Disc()
-    result = d.compute_trajectory()
-    for x in d.coordinate_names:
-        assert len(result.times) == len(getattr(result, x))
-    result2 = d.compute_trajectory()
-    assert all(result.times == result2.times)
-    for x in d.coordinate_names:
-        assert len(getattr(result, x)) == len(getattr(result2, x))
-
-
-def test_compute_trajectory_return_results():
-    d = Disc()
-    result = d.compute_trajectory()
-    result2, scipy_results = d.compute_trajectory(return_scipy_results=True)
-    for x in d.coordinate_names:
-        assert len(result.times) == len(getattr(result, x))
-    result2 = d.compute_trajectory()
-    assert all(result.times == result2.times)
-    for x in d.coordinate_names:
-        assert len(getattr(result, x)) == len(getattr(result2, x))
-    assert "status" in scipy_results
-    assert scipy_results.status >= 0  # -1 is failure
+    dct1, _ = d.compute_trajectory()
+    dct2, _ = d.compute_trajectory()
+    for k, v in dct1.items():
+        np.testing.assert_array_equal(dct2[k], v)
 
 
 def test_compute_trajectory_t_span_vs_flight_time():
     d = Disc()
-    result = d.compute_trajectory(flight_time=3)
-    result2 = d.compute_trajectory(t_span=(0, 3), flight_time=None)
-    assert all(result.times == result2.times)
-    for x in d.coordinate_names:
-        assert len(getattr(result, x)) == len(getattr(result2, x))
+    dct1, _ = d.compute_trajectory(flight_time=3)
+    dct2, _ = d.compute_trajectory(t_span=(0, 3), flight_time=None)
+    np.testing.assert_array_equal(dct1["times"], dct2["times"])
+    for k, v in dct1.items():
+        np.testing.assert_array_equal(dct2[k], v)
