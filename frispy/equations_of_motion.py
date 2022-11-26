@@ -42,9 +42,7 @@ class EOM:
         self.z_hat = np.array([0, 0, 1])
 
     @classmethod
-    def rotation_matrix_from_phi_theta(
-        cls, phi: float, theta: float
-    ) -> np.ndarray:
+    def rotation_matrix_from_phi_theta(cls, phi: float, theta: float) -> np.ndarray:
         sp, cp = np.sin(phi), np.cos(phi)
         st, ct = np.sin(theta), np.cos(theta)
         return cls.rotation_matrix(sp, cp, st, ct)
@@ -62,9 +60,7 @@ class EOM:
         The ``z_hat`` unit vector in the disk frame (D) will always be pointing
         perpendicular up from the top face of the disk.
         """
-        return np.array(
-            [[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]]
-        )
+        return np.array([[ct, sp * st, -st * cp], [0, cp, sp], [st, -sp * ct, cp * ct]])
 
     @classmethod
     def compute_angle_of_attack(
@@ -204,9 +200,7 @@ class EOM:
         res["T"] = res["T_x"] + res["T_y"] + res["T_z"]
         return res
 
-    def compute_derivatives(
-        self, time: float, coordinates: np.ndarray
-    ) -> np.ndarray:
+    def compute_derivatives(self, time: float, coordinates: np.ndarray) -> np.ndarray:
         """
         Right hand side of the ordinary differential equations. This is
         supplied to :meth:`scipy.integrate.solve_ivp`. See `this page
@@ -235,6 +229,4 @@ class EOM:
             coordinates[6], coordinates[7], velocity, ang_velocity
         )
         result = self.compute_torques(velocity, result)
-        return np.concatenate(
-            (velocity, result["Acc"], ang_velocity, result["T"])
-        )
+        return np.concatenate((velocity, result["Acc"], ang_velocity, result["T"]))

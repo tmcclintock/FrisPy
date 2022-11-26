@@ -51,9 +51,7 @@ class Disc:
         "mass": 0.175,  # kg
     }
 
-    def __init__(
-        self, model: Model = Model(), eom: Optional[EOM] = None, **kwargs
-    ):
+    def __init__(self, model: Model = Model(), eom: Optional[EOM] = None, **kwargs):
         self.model = model
         self.set_physical_attributes(**kwargs)
         self.set_default_initial_conditions(**kwargs)
@@ -168,9 +166,7 @@ class Disc:
 
 
 class Result(
-    namedtuple(
-        "Result", list(Disc._default_initial_conditions.keys()) + ["times"]
-    )
+    namedtuple("Result", list(Disc._default_initial_conditions.keys()) + ["times"])
 ):
     """
     A ``namedtuple`` subclass that contains the coordinate variables
