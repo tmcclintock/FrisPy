@@ -3,7 +3,7 @@ Tests of the ``Environment`` object.
 """
 import numpy as np
 
-from frispy import Environment
+from frispy.environment import Environment
 
 
 def test_smoke():
