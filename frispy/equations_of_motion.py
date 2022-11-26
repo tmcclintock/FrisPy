@@ -1,6 +1,5 @@
 """Equations of motion."""
 
-from numbers import Number
 from typing import Dict, Union
 
 import numpy as np
@@ -9,19 +8,29 @@ from frispy.model import Model
 
 
 class EOM:
-    """
-    ``EOM`` is short for "equations of motion" is used to run the ODE solver
-    from `scipy`. It takes in a model for the disc, the trajectory object,
+    """Equations of motion for a disc.
+
+    ``EOM`` is short for "equations of motion". Used to run the ODE solver
+    from ``scipy``. It takes in a model for the disc, the trajectory object,
     the environment, and implements the functions for calculating forces
     and torques.
+
+    Args:
+        area: disc area
+        I_xx: pitch and roll moments of inertia
+        I_zz: spin moment of inertia
+        mass: of the disc
+        air_density: thiccness of the air
+        g: gravitational acceleration
+        model: must yield force and torque coefficients
     """
 
     def __init__(
         self,
-        area: Number,
-        I_xx: Number,
-        I_zz: Number,
-        mass: Number,
+        area: float,
+        I_xx: float,
+        I_zz: float,
+        mass: float,
         air_density: float = 1.225,
         g: float = 9.81,
         model: Model = Model(),
@@ -43,17 +52,15 @@ class EOM:
 
     @classmethod
     def rotation_matrix_from_phi_theta(cls, phi: float, theta: float) -> np.ndarray:
-        """Rotation matrix.
-
-        TODO: remove
-        """
+        """Rotation matrix."""
         sp, cp = np.sin(phi), np.cos(phi)
         st, ct = np.sin(theta), np.cos(theta)
         return cls.rotation_matrix(sp, cp, st, ct)
 
     @staticmethod
     def rotation_matrix(sp: float, cp: float, st: float, ct) -> np.ndarray:
-        """
+        """Compute the rotaiton matrix.
+
         Compute the (partial) rotation matrix that transforms from the
         lab frame to the disc frame. Note that because of azimuthal
         symmetry, the azimuthal angle (`gamma`) is not used.
