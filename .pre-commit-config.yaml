@@ -31,12 +31,12 @@ repos:
         entry: interrogate
         args: [-vv, --config=pyproject.toml]
         pass_filenames: false
-  # - repo: local
-  #   hooks:
-  #     - id: pydocstyle
-  #       name: pydocstyle
-  #       language: system
-  #       entry: pydocstyle
-  #       require_serial: true
-  #       types: [python]
-  #       exclude: ^tests/
+  - repo: local
+    hooks:
+      - id: pydocstyle
+        name: pydocstyle
+        language: system
+        entry: pydocstyle
+        require_serial: true
+        types: [python]
+        exclude: ^tests/
