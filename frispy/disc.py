@@ -51,7 +51,6 @@ class Disc:
         g: float = 9.81,  # m / s ^ 2
         model: Model = Model(),
         eom: Optional[EOM] = None,
-        **kwargs,
     ):
         """Constructor."""
         self.x = x
