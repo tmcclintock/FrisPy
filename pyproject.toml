@@ -3,7 +3,7 @@ name = "frispy"
 version = "0.1.0"
 description = "Frisbee simulation."
 authors = ["Tom McClintock <tmcclintock89@gmail.com>"]
-readme = "README.md"
+readme = "README.rst"
 
 [tool.poetry.dependencies]
 python = "^3.9"
