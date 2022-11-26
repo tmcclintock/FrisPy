@@ -6,7 +6,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from frispy import Model
+from frispy.model import Model
 
 
 class TestModel(TestCase):

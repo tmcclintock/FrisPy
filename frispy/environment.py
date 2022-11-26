@@ -1,3 +1,5 @@
+"""Environment including gravity and atmospheric density."""
+
 from dataclasses import dataclass
 
 import numpy as np

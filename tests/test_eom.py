@@ -3,7 +3,7 @@ from unittest import TestCase
 import numpy as np
 import numpy.testing as npt
 
-from frispy import EOM
+from frispy.equations_of_motion import EOM
 
 
 class TestEOM(TestCase):

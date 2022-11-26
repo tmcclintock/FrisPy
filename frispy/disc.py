@@ -1,3 +1,5 @@
+"""Disc class."""
+
 from collections import OrderedDict, namedtuple
 from numbers import Number
 from typing import List, Optional, Set
@@ -11,7 +13,9 @@ from frispy.model import Model
 
 
 class Disc:
-    """Flying spinning disc object. The disc object contains only physical
+    """Flying spinning disc object.
+
+    The disc object contains only physical
     parameters of the disc and environment that it exists (e.g. gravitational
     acceleration and air density). Note that the default area, mass, and
     inertial moments are for Discraft Ultrastars (175 grams or 0.175 kg).
@@ -43,6 +47,7 @@ class Disc:
             "dgamma": 62.0,
         }
     )
+    """Default initial conditions."""
 
     _default_physical_attributes = {
         "area": 0.058556,  # m^2
@@ -50,10 +55,10 @@ class Disc:
         "I_xx": 0.001219,  # kg*m^2
         "mass": 0.175,  # kg
     }
+    """Default physical attributes."""
 
-    def __init__(
-        self, model: Model = Model(), eom: Optional[EOM] = None, **kwargs
-    ):
+    def __init__(self, model: Model = Model(), eom: Optional[EOM] = None, **kwargs):
+        """Constructor."""
         self.model = model
         self.set_physical_attributes(**kwargs)
         self.set_default_initial_conditions(**kwargs)
@@ -73,8 +78,9 @@ class Disc:
         return_scipy_results: bool = False,
         **kwargs,
     ):
-        """Call the differential equation solver to compute
-        the trajectory. The kinematic variables and timesteps are saved
+        """Call the differential equation solver to computethe trajectory.
+
+        The kinematic variables and timesteps are saved
         as the `current_trajectory` attribute, which is a dictionary,
         which is also returned by this function.
 
@@ -99,7 +105,6 @@ class Disc:
             kwargs: extra keyword arguments to pass
                 to the :meth:`scipy.integrate.solver_ivp`
         """
-
         t_span = kwargs.pop("t_span", (0, flight_time))
         t_eval: np.ndarray = kwargs.pop(
             "t_eval", np.linspace(t_span[0], t_span[1], n_times)
@@ -128,14 +133,15 @@ class Disc:
             return fpr
 
     def reset_initial_conditions(self) -> None:
-        """
-        Set the initial_conditions of the disc to the default and
-        clear the trajectory.
-        """
+        """Set the initial_conditions of the disc to the default."""
         self.initial_conditions = self.default_initial_conditions
         return
 
     def set_default_initial_conditions(self, **kwargs) -> None:
+        """Setter for default initial conditions.
+
+        TODO: remove.
+        """
         initial_conditions = self._default_initial_conditions.copy()
         valid_keys: Set[str] = set(initial_conditions.keys()).union(
             set(self._default_physical_attributes.keys())
@@ -151,26 +157,33 @@ class Disc:
         return
 
     def set_physical_attributes(self, **kwargs) -> None:
+        """Setter for default physical attributes.
+
+        TODO: remove.
+        """
         for key, value in self._default_physical_attributes.items():
             setattr(self, key, kwargs.get(key, value))
         return
 
     @property
     def environment(self) -> Environment:
+        """Pointer to the envronment.
+
+        TODO: remove
+        """
         return self.eom.environment
 
     @property
     def coordinate_names(self) -> List[str]:
-        """
-        Names of the kinematic variables
+        """Names of the kinematic variables.
+
+        TODO: remove
         """
         return list(self._default_initial_conditions.keys())
 
 
 class Result(
-    namedtuple(
-        "Result", list(Disc._default_initial_conditions.keys()) + ["times"]
-    )
+    namedtuple("Result", list(Disc._default_initial_conditions.keys()) + ["times"])
 ):
     """
     A ``namedtuple`` subclass that contains the coordinate variables

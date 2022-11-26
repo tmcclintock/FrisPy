@@ -1,7 +1,6 @@
 import numpy as np
-import pytest
 
-from frispy import Disc
+from frispy.disc import Disc
 
 
 def test_smoke():
