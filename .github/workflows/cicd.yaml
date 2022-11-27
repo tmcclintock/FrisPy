@@ -12,3 +12,8 @@ jobs:
   ci:
     uses: ./.github/workflows/ci.yaml
     secrets: inherit
+  cd:
+    needs: ci
+    if: ${{ github.event_name == 'release' }}
+    uses: ./.github/workflows/cd.yaml
+    secrets: inherit
