@@ -4,29 +4,22 @@ on:
   workflow_call:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    env:
-      POETRY_VIRTUALENVS_CREATE: "false"
+
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install poetry
-        run: |
-          pipx install poetry
-          pipx inject poetry poetry-bumpversion
+      - name: Build and publish to testpypi
+        uses: JRubics/poetry-publish@v1.15
+        with:
+          pypi_token: ${{ secrets.TEST_PYPI_TOKEN }}
+          repository_name: "testpypi"
+          repository_url: "https://test.pypi.org/legacy/"
+          ignore_dev_requirements: "yes"
 
-      - name: Build
-        run: |
-          poetry version ${{ github.ref_name }}
-          poetry build
-
-      - name: Publish to testpypi
-        run: |
-          poetry config pypi-token.test-pypi ${{ secrets.TEST_PYPI_API_TOKEN }}
-          poetry publish
-
-      - name: Publish to pypi
-        run: |
-          poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
-          poetry publish
+      - name: Build and publish to pypi
+        uses: JRubics/poetry-publish@v1.15
+        with:
+          pypi_token: ${{ secrets.PYPI_TOKEN }}
+          ignore_dev_requirements: "yes"
