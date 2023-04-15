@@ -35,7 +35,7 @@ class TestEOM(TestCase):
         for f in ["F_lift", "F_drag", "F_grav", "F_total", "Acc"]:
             assert f in result
             assert result[f].shape == (3,)
-            assert result[f].dtype == np.float
+            assert result[f].dtype == float
 
     def test_F_drag_direction(self):
         eom = EOM(**self.kwargs)
@@ -70,14 +70,14 @@ class TestEOM(TestCase):
         for t in ["T_x_lab", "T_y_lab", "T_x", "T_y", "T_z", "T"]:
             assert t in result
             assert result[t].shape == (3,)
-            assert result[t].dtype == np.float
+            assert result[t].dtype == float
 
     def test_compute_derivatives_smoke(self):
         eom = EOM(**self.kwargs)
         coords = np.array([0, 0, 1, 10, 0, 0, 0, 0, 0, 0, 0, 62])
         der = eom.compute_derivatives(0, coords)
         assert der.shape == (12,)
-        assert der.dtype == np.float
+        assert der.dtype == float
 
     def test_rotation_matrix(self):
         def trig_functions(phi, theta):
