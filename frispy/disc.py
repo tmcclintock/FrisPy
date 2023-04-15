@@ -1,6 +1,6 @@
 """Disc class."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Dict, Tuple, Type
 
 import numpy as np
@@ -63,7 +63,7 @@ class Disc:
     mass: float = 0.175  # kg
     air_density: float = 1.225  # kg / m ^ 3
     g: float = 9.81  # m / s ^ 2
-    model: Model = Model()
+    model: Model = field(default_factory=Model)
     eom: EOM = None
     eom_class: Type = EOM
 
