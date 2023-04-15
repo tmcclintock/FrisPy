@@ -64,6 +64,7 @@ class Disc:
     air_density: float = 1.225  # kg / m ^ 3
     g: float = 9.81  # m / s ^ 2
     model: Model = Model()
+    eom: EOM = None
     eom_class: Type = EOM
 
     def compute_trajectory(
@@ -137,6 +138,8 @@ class Disc:
             t_eval=t_eval,
             **solver_kwargs,
         )
+
+        self.eom = eom
 
         return (
             {
