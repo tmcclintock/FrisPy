@@ -32,7 +32,7 @@ Installation
 ------------
 
 The easiest way to install this package is with ``pip``. The PyPI package can
-be viewed `here <https://pypi.org/project/frispy/>`_.
+be viewed `here <https://pypi.org/project/frispy/>`_. 
 
 .. code-block:: bash
 
